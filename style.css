@@ -1,0 +1,231 @@
+/* Reset Dasar */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fcf8f2;
+    color: #4a3e3d;
+    padding: 20px;
+}
+
+/* Bagian Judul */
+.header {
+    text-align: center;
+    padding: 30px 20px;
+}
+
+.header h1 {
+    font-size: 2.2rem;
+    color: #6b534e;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.header p {
+    font-style: italic;
+    color: #8c736d;
+    font-size: 0.95rem;
+}
+
+/* --- DESAIN KOTAK HITUNG HARI JADIAN --- */
+.love-counter {
+    margin-top: 20px;
+    display: inline-block;
+    background-color: #ffffff;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-size: 1rem;
+    color: #6b534e;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(107, 83, 78, 0.08);
+    letter-spacing: 0.5px;
+}
+
+/* Struktur Papan Catur Rapat (CSS Grid) */
+.gallery-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+    gap: 12px;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+/* Item Kotak Foto */
+.gallery-item {
+    position: relative;
+    background-color: #ffffff;
+    overflow: hidden; 
+    aspect-ratio: 1 / 1; 
+    border-radius: 6px; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    cursor: pointer;
+    
+    /* Animasi kejutan awal saat web baru dibuka */
+    animation: gerakanMasukAwal 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery-item:hover {
+    transform: scale(1.04);
+    box-shadow: 0 8px 25px rgba(107, 83, 78, 0.2);
+    z-index: 2;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Teks Caption di Dalam Kotak Foto */
+.photo-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(107, 83, 78, 0.85);
+    color: #ffffff;
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 10px 5px;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover .photo-caption {
+    transform: translateY(0);
+}
+
+@keyframes gerakanMasukAwal {
+    0% { opacity: 0; transform: scale(0.8) translateY(40px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* --- TOMBOL MUSIK MELAYANG --- */
+.music-floating-btn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 50px;
+    height: 50px;
+    background-color: #6b534e;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.music-floating-btn:hover {
+    transform: scale(1.1);
+    background-color: #8c736d;
+}
+
+.music-icon {
+    font-size: 1.5rem;
+    display: inline-block;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.playing {
+    animation: spin 3s linear infinite;
+}
+
+/* --- TAMPILAN LIGHTBOX (ZOOM FOTO) --- */
+.lightbox {
+    display: none; 
+    position: fixed;
+    z-index: 1000;
+    padding-top: 50px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(26, 21, 20, 0.95); 
+    overflow: auto;
+    animation: fadeInLatar 0.3s ease forwards;
+}
+
+.lightbox-content {
+    margin: auto;
+    display: block;
+    max-width: 85%;
+    max-height: 75vh;
+    border-radius: 4px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+    animation: zoomMasukFoto 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.lightbox-caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    text-align: center;
+    color: #fcf8f2;
+    padding: 15px 0;
+    font-size: 1.1rem;
+    font-style: italic;
+    animation: fadeInLatar 0.5s ease 0.2s backwards;
+}
+
+@keyframes fadeInLatar {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes zoomMasukFoto {
+    0% { opacity: 0; transform: scale(0.6); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* --- EFEK KELOPAK BUNGA SAKURA BERGUGURAN --- */
+.sakura {
+    position: fixed;
+    top: -10px;
+    color: #ffb7b2; 
+    font-size: 1.2rem;
+    user-select: none;
+    pointer-events: none; 
+    z-index: 9999;
+    animation: gugur linear infinite;
+}
+
+@keyframes gugur {
+    0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 1; }
+    100% { transform: translateY(105vh) rotate(720deg) translateX(100px); opacity: 0; }
+}
+
+/* --- RESPONSIVE BREAKPOINT UNTUK HP --- */
+@media (max-width: 600px) {
+    .header h1 { font-size: 1.8rem; }
+    .gallery-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        padding: 5px;
+    }
+    .lightbox-content { max-width: 95%; }
+    .music-floating-btn { bottom: 15px; right: 15px; width: 45px; height: 45px; }
+}

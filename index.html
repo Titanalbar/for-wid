@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Memory Wall</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Tombol Musik Melayang -->
+    <button id="music-btn" class="music-floating-btn" title="Putar Musik">
+        <span class="music-icon">🎵</span>
+    </button>
+    
+    <!-- Audio Element -->
+    <audio id="bg-music" src="lagu.mp3" loop></audio>
+
+    <!-- Header / Judul Web (Sudah Diperbaiki Menjadi Satu Saja) -->
+    <header class="header">
+        <h1>Our Memory Wall</h1>
+        <p>Setiap foto punya cerita, dan setiap cerita selalu tentang kita. ❤️</p>
+        
+        <!-- Wadah Hitungan Hari Jadian -->
+        <div id="love-counter" class="love-counter">Menghitung momen indah...</div>
+    </header>
+
+    <!-- Wadah Dinding Foto -->
+    <main class="gallery-container" id="dinding-foto">
+        <!-- Foto diisi otomatis oleh script.js -->
+    </main>
+
+    <!-- Jendela Pop-up Lightbox (Tempat Foto Membesar) -->
+    <div id="lightbox-modal" class="lightbox">
+        <span class="close-btn">&times;</span>
+        <img class="lightbox-content" id="lightbox-img" src="" alt="Zoom Foto">
+        <div id="lightbox-caption" class="lightbox-caption"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
