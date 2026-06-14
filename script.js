@@ -5,7 +5,7 @@ const daftarCaption = [
     "Momen Manis ✨", "Kebersamaan Kita 🌸", "Hari yang Bahagia 🥰", 
     "Tawa Bersamamu 🗓️", "Momen Berharga 📂", "Senyuman Terbaik 😊", 
     "Kilas Balik Memori 📸", "Langkah Bersama 🗺️", "Sisi Cerita Lain 💬", 
-    "Tatapan Hangat 🌟", "Hari yang Tanang 🍃", "Hingga Waktu Berhenti ⏳", 
+    "Tatapan Hangat 🌟", "Hari yang Tenang 🍃", "Hingga Waktu Berhenti ⏳", 
     "Selamanya Bersama 🔒", "Cerita Baru 📖", "Tawa Lepas 💖", "Dunia Milik Kita 🌍"
 ];
 
@@ -75,32 +75,10 @@ const musicBtn = document.getElementById('music-btn');
 const bgMusic = document.getElementById('bg-music');
 const musicIcon = musicBtn.querySelector('.music-icon');
 
-function putarMusikOtomatis() {
-    if (bgMusic.paused) {
-        bgMusic.play().then(() => {
-            musicIcon.classList.add('playing');
-            musicIcon.innerText = "💿";
-            musicBtn.title = "Pause Musik";
-            
-            bukaWebMemicuMusik.forEach(event => {
-                document.removeEventListener(event, putarMusikOtomatis);
-            });
-        }).catch(err => {
-            console.log("Menunggu klik/scroll pertama dari user.");
-        });
-    }
-}
-
-const bukaWebMemicuMusik = ['click', 'touchstart', 'scroll', 'pointerdown'];
-bukaWebMemicuMusik.forEach(event => {
-    document.addEventListener(event, putarMusikOtomatis, { once: true });
-});
-
-// PERBAIKAN: Tombol manual dengan sistem Force Load & Playback Check
+// Tombol manual dengan proteksi muat ulang (Force Load & Playback Check)
 musicBtn.addEventListener('click', function(e) {
     e.stopPropagation();
     
-    // Paksa memuat ulang jika status file lagu sempat macet/unloaded
     if (bgMusic.readyState === 0) {
         bgMusic.load();
     }
@@ -111,7 +89,6 @@ musicBtn.addEventListener('click', function(e) {
             musicIcon.innerText = "💿";
             musicBtn.title = "Pause Musik";
         }).catch(err => {
-            // Jika membandel, langsung keluarkan peringatan deteksi lokasi file
             alert("Gagal memutar lagu!\n\nPastikan file bernama 'lagu.mp3' sudah ditaruh di folder utama (sejajar dengan index.html), bukan di dalam folder 'foto'.");
             console.error("Detail Error Audio:", err);
         });
@@ -135,7 +112,6 @@ function hitungWaktuJadian() {
     const menit = Math.floor((selisihWaktu % (1000 * 60 * 60)) / (1000 * 60));
     const detik = Math.floor((selisihWaktu % (1000 * 60)) / 1000);
 
-    // Proteksi jika elemen love-counter ada di HTML
     const counterElement = document.getElementById("love-counter");
     if (counterElement) {
         counterElement.innerHTML = `Sudah ${hari} Hari, ${jam} Jam, ${menit} Menit, dan ${detik} Detik Kita Bersama ✨`;
@@ -168,3 +144,25 @@ function buatKelopakSakura() {
 }
 
 setInterval(buatKelopakSakura, 400);
+
+// ==========================================
+// 6. LOGIKA TOMBOL SAMBUTAN & PEMUTAR MUSIK INSTAN
+// ==========================================
+const welcomeOverlay = document.getElementById('welcome-overlay');
+const startBtn = document.getElementById('start-btn');
+
+if (startBtn && welcomeOverlay) {
+    startBtn.addEventListener('click', function() {
+        welcomeOverlay.classList.add('fade-out');
+        
+        if (bgMusic.paused) {
+            bgMusic.play().then(() => {
+                musicIcon.classList.add('playing');
+                musicIcon.innerText = "💿";
+                musicBtn.title = "Pause Musik";
+            }).catch(err => {
+                console.error("Gagal memutar audio otomatis:", err);
+            });
+        }
+    });
+}

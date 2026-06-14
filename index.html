@@ -8,29 +8,30 @@
 </head>
 <body>
 
-    <!-- Tombol Musik Melayang -->
+    <div id="welcome-overlay" class="welcome-overlay">
+        <div class="welcome-card">
+            <h2>Spesial Untukmu ❤️</h2>
+            <p>Setiap detik bersamamu adalah momen berharga. Buka kotak ini untuk melihat kembali perjalanan cerita kita.</p>
+            <button id="start-btn" class="start-btn">Buka Memori ✨</button>
+        </div>
+    </div>
+
     <button id="music-btn" class="music-floating-btn" title="Putar Musik">
         <span class="music-icon">🎵</span>
     </button>
     
-    <!-- Audio Element -->
     <audio id="bg-music" src="lagu.mp3" loop></audio>
 
-    <!-- Header / Judul Web (Sudah Diperbaiki Menjadi Satu Saja) -->
     <header class="header">
         <h1>Our Memory Wall</h1>
         <p>Setiap foto punya cerita, dan setiap cerita selalu tentang kita. ❤️</p>
         
-        <!-- Wadah Hitungan Hari Jadian -->
         <div id="love-counter" class="love-counter">Menghitung momen indah...</div>
     </header>
 
-    <!-- Wadah Dinding Foto -->
     <main class="gallery-container" id="dinding-foto">
-        <!-- Foto diisi otomatis oleh script.js -->
-    </main>
+        </main>
 
-    <!-- Jendela Pop-up Lightbox (Tempat Foto Membesar) -->
     <div id="lightbox-modal" class="lightbox">
         <span class="close-btn">&times;</span>
         <img class="lightbox-content" id="lightbox-img" src="" alt="Zoom Foto">
