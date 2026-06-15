@@ -1,36 +1,45 @@
 const galleryContainer = document.getElementById('dinding-foto');
-const totalFoto = 47;
+const totalFoto = 147; // Membaca foto (0) sampai foto (146)
 
 const daftarCaption = [
     "Momen Manis ✨", "Kebersamaan Kita 🌸", "Hari yang Bahagia 🥰", 
     "Tawa Bersamamu 🗓️", "Momen Berharga 📂", "Senyuman Terbaik 😊", 
     "Kilas Balik Memori 📸", "Langkah Bersama 🗺️", "Sisi Cerita Lain 💬", 
-    "Tatapan Hangat 🌟", "Hari yang Tenang 🍃", "Hingga Waktu Berhenti ⏳", 
+    "Tatapan Warm 🌟", "Hari yang Tenang 🍃", "Hingga Waktu Berhenti ⏳", 
     "Selamanya Bersama 🔒", "Cerita Baru 📖", "Tawa Lepas 💖", "Dunia Milik Kita 🌍"
 ];
 
-// 1. GENERATE KOTAK FOTO OTOMATIS
-for (let i = 1; i <= totalFoto; i++) {
+// 1. GENERATE KOTAK FOTO MASSAL (0 sampai 146)
+for (let i = 0; i < totalFoto; i++) {
     const captionAcak = daftarCaption[Math.floor(Math.random() * daftarCaption.length)];
     
     const galleryItem = document.createElement('div');
     galleryItem.className = 'gallery-item';
 
     const imgElement = document.createElement('img');
+    // Default pertama kita coba panggil format .jpg
     imgElement.src = `foto/foto (${i}).jpg`; 
     imgElement.alt = `Momen Kita ${i}`;
 
-    let mencobaFormat = 1;
+    // SISTEM PENGAMAN ERROR FORMAT UTK LOKAL PC
+    let urutanCek = 1;
     imgElement.onerror = function() {
-        if (mencobaFormat === 1) {
+        if (urutanCek === 1) {
+            // Jika .jpg gagal, coba .jpeg (4 huruf kecil)
             this.src = `foto/foto (${i}).jpeg`;
-            mencobaFormat = 2;
-        } else if (mencobaFormat === 2) {
+            urutanCek = 2;
+        } else if (urutanCek === 2) {
+            // Jika masih gagal, coba .JPG (huruf besar)
             this.src = `foto/foto (${i}).JPG`;
-            mencobaFormat = 3;
-        } else if (mencobaFormat === 3) {
+            urutanCek = 3;
+        } else if (urutanCek === 3) {
+            // Jika masih gagal, cek kemungkinan spasi ganda sebelum kurung buka
             this.src = `foto/foto  (${i}).jpg`;
-            mencobaFormat = 4;
+            urutanCek = 4;
+        } else if (urutanCek === 4) {
+            // Cek kemungkinan terakhir spasi ganda dengan ekstensi .jpeg
+            this.src = `foto/foto  (${i}).jpeg`;
+            urutanCek = 5;
         }
     };
 
@@ -70,12 +79,11 @@ lightboxModal.addEventListener('click', function(e) {
     }
 });
 
-// 3. LOGIKA PEMUTAR MUSIK LATAR BELAKANG
+// 3. LOGIKA TOMBOL MUSIK
 const musicBtn = document.getElementById('music-btn');
 const bgMusic = document.getElementById('bg-music');
 const musicIcon = musicBtn.querySelector('.music-icon');
 
-// Tombol manual dengan proteksi muat ulang (Force Load & Playback Check)
 musicBtn.addEventListener('click', function(e) {
     e.stopPropagation();
     
@@ -89,8 +97,8 @@ musicBtn.addEventListener('click', function(e) {
             musicIcon.innerText = "💿";
             musicBtn.title = "Pause Musik";
         }).catch(err => {
-            alert("Gagal memutar lagu!\n\nPastikan file bernama 'lagu.mp3' sudah ditaruh di folder utama (sejajar dengan index.html), bukan di dalam folder 'foto'.");
-            console.error("Detail Error Audio:", err);
+            alert("Gagal memutar lagu!\n\nPastikan file bernama 'lagu.mp3' sudah ditaruh di folder utama.");
+            console.error(err);
         });
     } else {
         bgMusic.pause();
@@ -100,7 +108,7 @@ musicBtn.addEventListener('click', function(e) {
     }
 });
 
-// 4. LOGIKA HITUNG HARI JADIAN (DISET KE: 14 MEI 2026 JAM 09:00 AM)
+// 4. LOGIKA HITUNG WAKTU JADIAN
 function hitungWaktuJadian() {
     const tanggalJadian = new Date("2026-05-14T09:00:00"); 
     const sekarang = new Date();
@@ -124,6 +132,7 @@ hitungWaktuJadian();
 // 5. LOGIKA HUJAN KELOPAK BUNGA SAKURA
 function buatKelopakSakura() {
     const sakura = document.createElement("div");
+    sakura.className = "custom-sakura"; // Menggunakan nama kelas aman agar tidak bentrok
     sakura.className = "sakura";
     
     const simbolBunga = ["🌸", "🌸", "✨", "❤️"];
@@ -145,9 +154,7 @@ function buatKelopakSakura() {
 
 setInterval(buatKelopakSakura, 400);
 
-// ==========================================
-// 6. LOGIKA TOMBOL SAMBUTAN & PEMUTAR MUSIK INSTAN
-// ==========================================
+// 6. LOGIKA TOMBOL SAMBUTAN & AUTOPLAY MUSIK
 const welcomeOverlay = document.getElementById('welcome-overlay');
 const startBtn = document.getElementById('start-btn');
 

@@ -46,10 +46,10 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Struktur Papan Catur Rapat (CSS Grid) */
+/* Struktur Papan Catur Rapat (CSS Grid Dioptimasi Jadi 280px Agar Lebih HD) */
 .gallery-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
     gap: 12px;
     max-width: 1300px;
     margin: 0 auto;
@@ -82,6 +82,13 @@ body {
     height: 100%;
     object-fit: cover;
     display: block;
+    
+    /* OPTIMASI RESOLUSI HD MAKSIMAL UNTUK LOKAL PC */
+    image-rendering: -webkit-optimize-contrast; /* Menajamkan kontras piksel Chrome */
+    image-rendering: high-quality;             /* Algoritma rendering kualitas tertinggi */
+    transform: translateZ(0);                  /* Memaksa hardware kartu grafis merender gambar */
+    backface-visibility: hidden;               /* Menghilangkan sisa blur di ujung foto */
+    will-change: transform;                    /* Menjaga ketajaman setelah animasi masuk selesai */
 }
 
 /* Teks Caption di Dalam Kotak Foto */
