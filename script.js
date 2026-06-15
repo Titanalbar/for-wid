@@ -5,39 +5,41 @@ const daftarCaption = [
     "Momen Manis ✨", "Kebersamaan Kita 🌸", "Hari yang Bahagia 🥰", 
     "Tawa Bersamamu 🗓️", "Momen Berharga 📂", "Senyuman Terbaik 😊", 
     "Kilas Balik Memori 📸", "Langkah Bersama 🗺️", "Sisi Cerita Lain 💬", 
-    "Tatapan Warm 🌟", "Hari yang Tenang 🍃", "Hingga Waktu Berhenti ⏳", 
+    "Tatapan Hangat 🌟", "Hari yang Tenang 🍃", "Hingga Waktu Berhenti ⏳", 
     "Selamanya Bersama 🔒", "Cerita Baru 📖", "Tawa Lepas 💖", "Dunia Milik Kita 🌍"
 ];
 
-// 1. GENERATE KOTAK FOTO MASSAL (0 sampai 146)
+// ==========================================
+// 1. GENERATE KOTAK FOTO & INISIALISASI TILT 3D
+// ==========================================
 for (let i = 0; i < totalFoto; i++) {
     const captionAcak = daftarCaption[Math.floor(Math.random() * daftarCaption.length)];
     
     const galleryItem = document.createElement('div');
     galleryItem.className = 'gallery-item';
+    
+    galleryItem.setAttribute('data-tilt', '');
+    galleryItem.setAttribute('data-tilt-max', '15');       
+    galleryItem.setAttribute('data-tilt-speed', '400');    
+    galleryItem.setAttribute('data-tilt-glare', 'true');   
+    galleryItem.setAttribute('data-tilt-max-glare', '0.2');
 
     const imgElement = document.createElement('img');
-    // Default pertama kita coba panggil format .jpg
     imgElement.src = `foto/foto (${i}).jpg`; 
     imgElement.alt = `Momen Kita ${i}`;
 
-    // SISTEM PENGAMAN ERROR FORMAT UTK LOKAL PC
     let urutanCek = 1;
     imgElement.onerror = function() {
         if (urutanCek === 1) {
-            // Jika .jpg gagal, coba .jpeg (4 huruf kecil)
             this.src = `foto/foto (${i}).jpeg`;
             urutanCek = 2;
         } else if (urutanCek === 2) {
-            // Jika masih gagal, coba .JPG (huruf besar)
             this.src = `foto/foto (${i}).JPG`;
             urutanCek = 3;
         } else if (urutanCek === 3) {
-            // Jika masih gagal, cek kemungkinan spasi ganda sebelum kurung buka
             this.src = `foto/foto  (${i}).jpg`;
             urutanCek = 4;
         } else if (urutanCek === 4) {
-            // Cek kemungkinan terakhir spasi ganda dengan ekstensi .jpeg
             this.src = `foto/foto  (${i}).jpeg`;
             urutanCek = 5;
         }
@@ -57,7 +59,13 @@ for (let i = 0; i < totalFoto; i++) {
     galleryContainer.appendChild(galleryItem);
 }
 
+if (window.innerWidth > 600 && typeof VanillaTilt !== 'undefined') {
+    VanillaTilt.init(document.querySelectorAll(".gallery-item"));
+}
+
+// ==========================================
 // 2. LOGIKA LIGHTBOX (ZOOM FOTO)
+// ==========================================
 const lightboxModal = document.getElementById('lightbox-modal');
 const lightboxImg = document.getElementById('lightbox-img');
 const lightboxCaption = document.getElementById('lightbox-caption');
@@ -79,36 +87,72 @@ lightboxModal.addEventListener('click', function(e) {
     }
 });
 
-// 3. LOGIKA TOMBOL MUSIK
+// ==========================================
+// 3. MULTI-PLAYER PLAYLIST MANAGEMENT (ANTI-BLOKIR CHROME)
+// ==========================================
+const players = [
+    document.getElementById('bg-music-1'),
+    document.getElementById('bg-music-2'),
+    document.getElementById('bg-music-3')
+];
+let indeksLaguSekarang = 0;
+let statusMusikBerjalan = false;
+
 const musicBtn = document.getElementById('music-btn');
-const bgMusic = document.getElementById('bg-music');
 const musicIcon = musicBtn.querySelector('.music-icon');
 
-musicBtn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    
-    if (bgMusic.readyState === 0) {
-        bgMusic.load();
-    }
+// Fungsi utama memutar lagu berdasarkan index player
+function eksekusiPutar(indeks) {
+    // Matikan semua player lain terlebih dahulu agar tidak saling tabrakan suara
+    players.forEach(p => {
+        p.pause();
+        p.currentTime = 0;
+    });
 
-    if (bgMusic.paused) {
-        bgMusic.play().then(() => {
+    const activePlayer = players[indeks];
+    if (activePlayer) {
+        activePlayer.play().then(() => {
+            statusMusikBerjalan = true;
             musicIcon.classList.add('playing');
             musicIcon.innerText = "💿";
             musicBtn.title = "Pause Musik";
-        }).catch(err => {
-            alert("Gagal memutar lagu!\n\nPastikan file bernama 'lagu.mp3' sudah ditaruh di folder utama.");
-            console.error(err);
-        });
+        }).catch(err => console.error("Gagal putar otomatis player ke-" + indeks, err));
+    }
+}
+
+// Hubungkan semua event 'ended' pada masing-masing player secara mandiri
+players.forEach((player, indeks) => {
+    player.addEventListener('ended', function() {
+        // Hitung index lagu berikutnya (0 -> 1 -> 2 -> kembali ke 0)
+        indeksLaguSekarang = (indeks + 1) % players.length;
+        eksekusiPutar(indeksLaguSekarang);
+    });
+});
+
+// Handler Klik Manual pada Tombol Tunggal Piringan Hitam
+musicBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const activePlayer = players[indeksLaguSekarang];
+
+    if (!activePlayer) return;
+
+    if (activePlayer.paused) {
+        activePlayer.play().then(() => {
+            statusMusikBerjalan = true;
+            musicIcon.classList.add('playing');
+            musicIcon.innerText = "💿";
+        }).catch(err => console.error(err));
     } else {
-        bgMusic.pause();
+        activePlayer.pause();
+        statusMusikBerjalan = false;
         musicIcon.classList.remove('playing');
         musicIcon.innerText = "🎵";
-        musicBtn.title = "Putar Musik";
     }
 });
 
+// ==========================================
 // 4. LOGIKA HITUNG WAKTU JADIAN
+// ==========================================
 function hitungWaktuJadian() {
     const tanggalJadian = new Date("2026-05-14T09:00:00"); 
     const sekarang = new Date();
@@ -129,10 +173,11 @@ function hitungWaktuJadian() {
 setInterval(hitungWaktuJadian, 1000);
 hitungWaktuJadian(); 
 
+// ==========================================
 // 5. LOGIKA HUJAN KELOPAK BUNGA SAKURA
+// ==========================================
 function buatKelopakSakura() {
     const sakura = document.createElement("div");
-    sakura.className = "custom-sakura"; // Menggunakan nama kelas aman agar tidak bentrok
     sakura.className = "sakura";
     
     const simbolBunga = ["🌸", "🌸", "✨", "❤️"];
@@ -154,7 +199,9 @@ function buatKelopakSakura() {
 
 setInterval(buatKelopakSakura, 400);
 
-// 6. LOGIKA TOMBOL SAMBUTAN & AUTOPLAY MUSIK
+// ==========================================
+// 6. LOGIKA TOMBOL SAMBUTAN & UNLOCK ALL AUDIO
+// ==========================================
 const welcomeOverlay = document.getElementById('welcome-overlay');
 const startBtn = document.getElementById('start-btn');
 
@@ -162,14 +209,13 @@ if (startBtn && welcomeOverlay) {
     startBtn.addEventListener('click', function() {
         welcomeOverlay.classList.add('fade-out');
         
-        if (bgMusic.paused) {
-            bgMusic.play().then(() => {
-                musicIcon.classList.add('playing');
-                musicIcon.innerText = "💿";
-                musicBtn.title = "Pause Musik";
-            }).catch(err => {
-                console.error("Gagal memutar audio otomatis:", err);
-            });
-        }
+        // TRIK UTAMA: Pancing semua player dengan metode load kosong 
+        // agar browser Chrome menganggap ketiga player sudah disetujui pengguna
+        players.forEach(p => {
+            if(p) p.load();
+        });
+
+        // Jalankan lagu pertama
+        eksekusiPutar(indeksLaguSekarang);
     });
 }
