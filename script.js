@@ -10,19 +10,13 @@ const daftarCaption = [
 ];
 
 // ==========================================
-// 1. GENERATE KOTAK FOTO & INISIALISASI TILT 3D
+// 1. GENERATE KOTAK FOTO MASSAL
 // ==========================================
 for (let i = 0; i < totalFoto; i++) {
     const captionAcak = daftarCaption[Math.floor(Math.random() * daftarCaption.length)];
     
     const galleryItem = document.createElement('div');
     galleryItem.className = 'gallery-item';
-    
-    galleryItem.setAttribute('data-tilt', '');
-    galleryItem.setAttribute('data-tilt-max', '15');       
-    galleryItem.setAttribute('data-tilt-speed', '400');    
-    galleryItem.setAttribute('data-tilt-glare', 'true');   
-    galleryItem.setAttribute('data-tilt-max-glare', '0.2');
 
     const imgElement = document.createElement('img');
     imgElement.src = `foto/foto (${i}).jpg`; 
@@ -59,8 +53,19 @@ for (let i = 0; i < totalFoto; i++) {
     galleryContainer.appendChild(galleryItem);
 }
 
-if (window.innerWidth > 600 && typeof VanillaTilt !== 'undefined') {
-    VanillaTilt.init(document.querySelectorAll(".gallery-item"));
+// ==========================================
+// DETEKSI LOGIKA ULANG TAHUN WIDIA
+// ==========================================
+const tanggalUltahWidia = "10-17"; 
+const hariIni = new Date();
+const bulanTanggalSekarang = `${String(hariIni.getMonth() + 1).padStart(2, '0')}-${String(hariIni.getDate()).padStart(2, '0')}`;
+const apakahHariUlangTahun = (bulanTanggalSekarang === tanggalUltahWidia);
+
+if (apakahHariUlangTahun) {
+    window.addEventListener('DOMContentLoaded', () => {
+        const titleEl = document.getElementById('web-title');
+        if (titleEl) titleEl.innerHTML = "Happy Birthday, Widia! 🎂🎉";
+    });
 }
 
 // ==========================================
@@ -88,7 +93,7 @@ lightboxModal.addEventListener('click', function(e) {
 });
 
 // ==========================================
-// 3. MULTI-PLAYER PLAYLIST MANAGEMENT (ANTI-BLOKIR CHROME)
+// 3. MULTI-PLAYER PLAYLIST MANAGEMENT
 // ==========================================
 const players = [
     document.getElementById('bg-music-1'),
@@ -96,59 +101,72 @@ const players = [
     document.getElementById('bg-music-3')
 ];
 let indeksLaguSekarang = 0;
-let statusMusikBerjalan = false;
 
 const musicBtn = document.getElementById('music-btn');
 const musicIcon = musicBtn.querySelector('.music-icon');
 
-// Fungsi utama memutar lagu berdasarkan index player
 function eksekusiPutar(indeks) {
-    // Matikan semua player lain terlebih dahulu agar tidak saling tabrakan suara
     players.forEach(p => {
-        p.pause();
-        p.currentTime = 0;
+        if(p) { p.pause(); p.currentTime = 0; }
     });
 
     const activePlayer = players[indeks];
     if (activePlayer) {
         activePlayer.play().then(() => {
-            statusMusikBerjalan = true;
             musicIcon.classList.add('playing');
             musicIcon.innerText = "💿";
             musicBtn.title = "Pause Musik";
-        }).catch(err => console.error("Gagal putar otomatis player ke-" + indeks, err));
+        }).catch(err => console.error("Autoplay safety triggered."));
     }
 }
 
-// Hubungkan semua event 'ended' pada masing-masing player secara mandiri
 players.forEach((player, indeks) => {
-    player.addEventListener('ended', function() {
-        // Hitung index lagu berikutnya (0 -> 1 -> 2 -> kembali ke 0)
-        indeksLaguSekarang = (indeks + 1) % players.length;
-        eksekusiPutar(indeksLaguSekarang);
-    });
+    if(player) {
+        player.addEventListener('ended', function() {
+            indeksLaguSekarang = (indeks + 1) % players.length;
+            eksekusiPutar(indeksLaguSekarang);
+        });
+    }
 });
 
-// Handler Klik Manual pada Tombol Tunggal Piringan Hitam
 musicBtn.addEventListener('click', function(e) {
     e.stopPropagation();
     const activePlayer = players[indeksLaguSekarang];
-
     if (!activePlayer) return;
 
     if (activePlayer.paused) {
         activePlayer.play().then(() => {
-            statusMusikBerjalan = true;
             musicIcon.classList.add('playing');
             musicIcon.innerText = "💿";
         }).catch(err => console.error(err));
     } else {
         activePlayer.pause();
-        statusMusikBerjalan = false;
         musicIcon.classList.remove('playing');
         musicIcon.innerText = "🎵";
     }
 });
+
+// ==========================================
+// LOGIKA POP-UP SURAT CINTA RAHASIA
+// ==========================================
+const letterBtn = document.getElementById('letter-btn');
+const letterModal = document.getElementById('letter-modal');
+const closeLetterBtn = document.querySelector('.close-letter-btn');
+
+if(letterBtn && letterModal && closeLetterBtn) {
+    letterBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        letterModal.style.display = "flex";
+    });
+
+    closeLetterBtn.addEventListener('click', () => {
+        letterModal.style.display = "none";
+    });
+
+    letterModal.addEventListener('click', (e) => {
+        if(e.target === letterModal) letterModal.style.display = "none";
+    });
+}
 
 // ==========================================
 // 4. LOGIKA HITUNG WAKTU JADIAN
@@ -156,7 +174,6 @@ musicBtn.addEventListener('click', function(e) {
 function hitungWaktuJadian() {
     const tanggalJadian = new Date("2026-05-14T09:00:00"); 
     const sekarang = new Date();
-    
     const selisihWaktu = sekarang - tanggalJadian;
 
     const hari = Math.floor(selisihWaktu / (1000 * 60 * 60 * 24));
@@ -169,38 +186,83 @@ function hitungWaktuJadian() {
         counterElement.innerHTML = `Sudah ${hari} Hari, ${jam} Jam, ${menit} Menit, dan ${detik} Detik Kita Bersama ✨`;
     }
 }
-
 setInterval(hitungWaktuJadian, 1000);
 hitungWaktuJadian(); 
 
-// ==========================================
-// 5. LOGIKA HUJAN KELOPAK BUNGA SAKURA
+/// ==========================================
+// 5. LOGIKA HUJAN KELOPAK & DAUN MAPLE MULTI-WARNA
 // ==========================================
 function buatKelopakSakura() {
     const sakura = document.createElement("div");
-    sakura.className = "sakura";
+    customSakuraClass = "sakura";
+    sakura.className = customSakuraClass;
     
-    const simbolBunga = ["🌸", "🌸", "✨", "❤️"];
-    sakura.innerText = simbolBunga[Math.floor(Math.random() * simbolBunga.length)];
+    // Daftar partikel (Sakura tetap dibuat dominan)
+    const partikelBiasa = ["🌸", "🌸", "🌸", "🌸", "🌸", "💮", "🌼", "🌻", "🌺", "🍁", "🍁", "✨", "❤️"];
+    const partikelUltah = ["🎂", "🎈", "🎉", "💖", "✨", "🌸", "💮", "🍰"];
+    
+    const listSimbol = apakahHariUlangTahun ? partikelUltah : partikelBiasa;
+    const simbolTerpilih = listSimbol[Math.floor(Math.random() * listSimbol.length)];
+    sakura.innerText = simbolTerpilih;
+    
+    // JIKA YANG MUNCUL DAUN MAPLE, BERIKAN VARIASI WARNA ACAK VIA CSS CLASS
+    if (simbolTerpilih === "🍁") {
+        const daftarWarnaMaple = ["maple-hijau", "maple-kuning", "maple-ungu", "maple-biru", "maple-tua"];
+        const warnaAcak = daftarWarnaMaple[Math.floor(Math.random() * daftarWarnaMaple.length)];
+        sakura.classList.add(warnaAcak);
+    }
     
     sakura.style.left = Math.random() * 100 + "vw";
-    sakura.style.fontSize = Math.random() * 0.5 + 0.8 + "rem";
+    sakura.style.fontSize = Math.random() * 0.5 + 0.8 + "rem"; 
     
-    const duration = Math.random() * 4 + 4;
+    const duration = Math.random() * 4 + 4; 
     sakura.style.animationDuration = duration + "s";
-    sakura.style.opacity = Math.random() * 0.6 + 0.4;
+    sakura.style.opacity = Math.random() * 0.6 + 0.4; 
 
     document.body.appendChild(sakura);
-
-    setTimeout(() => {
-        sakura.remove();
-    }, duration * 1000);
+    setTimeout(() => { sakura.remove(); }, duration * 1000);
 }
-
-setInterval(buatKelopakSakura, 400);
+setInterval(buatKelopakSakura, 300);
 
 // ==========================================
-// 6. LOGIKA TOMBOL SAMBUTAN & UNLOCK ALL AUDIO
+// 6. HOVER TAB TITLE DYNAMIC TRICK
+// ==========================================
+const judulAsliWeb = document.title;
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        document.title = "Kok ditinggal? 🥺❤️";
+    } else {
+        document.title = judulAsliWeb;
+    }
+});
+
+// ==========================================
+// 7. LOGIKA KEMBALI KE ATAS / BACK TO TOP (KONDISI DASAR HALAMAN)
+// ==========================================
+const backToTopBtn = document.getElementById("back-to-top");
+
+window.onscroll = function() {
+    // Membaca posisi scroll saat ini
+    const posisiScroll = window.innerHeight + window.scrollY;
+    // Membaca total tinggi maksimal halaman web saat ini
+    const totalTinggiHalaman = document.documentElement.scrollHeight;
+    
+    // Tombol baru akan muncul jika Widia sudah scroll mendekati bawah (sisa 150px dari paling dasar)
+    if (posisiScroll >= totalTinggiHalaman - 150) {
+        if (backToTopBtn) backToTopBtn.style.display = "block";
+    } else {
+        if (backToTopBtn) backToTopBtn.style.display = "none";
+    }
+};
+
+if (backToTopBtn) {
+    backToTopBtn.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// ==========================================
+// LOGIKA TOMBOL SAMBUTAN & AUTOPLAY MUSIK
 // ==========================================
 const welcomeOverlay = document.getElementById('welcome-overlay');
 const startBtn = document.getElementById('start-btn');
@@ -208,14 +270,7 @@ const startBtn = document.getElementById('start-btn');
 if (startBtn && welcomeOverlay) {
     startBtn.addEventListener('click', function() {
         welcomeOverlay.classList.add('fade-out');
-        
-        // TRIK UTAMA: Pancing semua player dengan metode load kosong 
-        // agar browser Chrome menganggap ketiga player sudah disetujui pengguna
-        players.forEach(p => {
-            if(p) p.load();
-        });
-
-        // Jalankan lagu pertama
+        players.forEach(p => { if(p) p.load(); });
         eksekusiPutar(indeksLaguSekarang);
     });
 }

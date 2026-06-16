@@ -46,35 +46,38 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Struktur Papan Catur Rapat (CSS Grid Dioptimasi Jadi 280px Agar Lebih HD) */
+/* Struktur CSS Grid Dioptimasi 280px */
 .gallery-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-    gap: 12px;
+    gap: 20px; 
     max-width: 1300px;
     margin: 0 auto;
-    padding: 10px;
+    padding: 20px 10px;
 }
 
-/* Item Kotak Foto */
+/* =======================================================
+   REVISI EFEK: POLAROID TERANGKAT HALUS (FLOATING CARD)
+   ======================================================= */
 .gallery-item {
     position: relative;
     background-color: #ffffff;
     overflow: hidden; 
     aspect-ratio: 1 / 1; 
-    border-radius: 6px; 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    border-radius: 12px; 
+    /* Bayangan dasar tipis saat diam */
+    box-shadow: 0 4px 12px rgba(107, 83, 78, 0.06);
     cursor: pointer;
     
-    /* Animasi kejutan awal saat web baru dibuka */
-    animation: gerakanMasukAwal 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Transisi naik-turun kartu yang sangat smooth */
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
 }
 
+/* Saat disentuh kursor, kartu hanya bergeser naik 6px ke atas & bayangan menebal halus */
 .gallery-item:hover {
-    transform: scale(1.04);
-    box-shadow: 0 8px 25px rgba(107, 83, 78, 0.2);
-    z-index: 2;
+    transform: translateY(-6px);
+    box-shadow: 0 15px 30px rgba(107, 83, 78, 0.15);
+    z-index: 5;
 }
 
 .gallery-item img {
@@ -82,65 +85,69 @@ body {
     height: 100%;
     object-fit: cover;
     display: block;
-    
-    /* OPTIMASI RESOLUSI HD MAKSIMAL UNTUK LOKAL PC */
-    image-rendering: -webkit-optimize-contrast; /* Menajamkan kontras piksel Chrome */
-    image-rendering: high-quality;             /* Algoritma rendering kualitas tertinggi */
-    transform: translateZ(0);                  /* Memaksa hardware kartu grafis merender gambar */
-    backface-visibility: hidden;               /* Menghilangkan sisa blur di ujung foto */
-    will-change: transform;                    /* Menjaga ketajaman setelah animasi masuk selesai */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: high-quality;             
+    backface-visibility: hidden;               
+    will-change: transform;    
 }
 
-/* Teks Caption di Dalam Kotak Foto */
+/* Teks Caption Muncul Halus Dari Bawah */
 .photo-caption {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(107, 83, 78, 0.85);
-    color: #ffffff;
+    bottom: 15px;
+    left: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.96); 
+    color: #6b534e;
     font-size: 0.85rem;
+    font-weight: 600;
     text-align: center;
-    padding: 10px 5px;
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
+    padding: 11px;
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+    z-index: 2;
 }
 
 .gallery-item:hover .photo-caption {
-    transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0); 
 }
 
-@keyframes gerakanMasukAwal {
-    0% { opacity: 0; transform: scale(0.8) translateY(40px); }
-    100% { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-/* --- TOMBOL MUSIK MELAYANG --- */
-.music-floating-btn {
+/* --- KONTROL TOMBOL MELAYANG GANDA (POJOK KANAN BAWAH) --- */
+.floating-controls {
     position: fixed;
     bottom: 25px;
     right: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 999;
+}
+
+.floating-btn {
     width: 50px;
     height: 50px;
     background-color: #6b534e;
     border: none;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    z-index: 999;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     display: flex;
     align-items: center;
     justify-content: center;
     transition: transform 0.2s ease, background-color 0.3s ease;
 }
 
-.music-floating-btn:hover {
+.floating-btn:hover {
     transform: scale(1.1);
     background-color: #8c736d;
 }
 
-.music-icon {
-    font-size: 1.5rem;
+.control-icon, .music-icon {
+    font-size: 1.4rem;
+    color: #ffffff;
     display: inline-block;
 }
 
@@ -149,7 +156,169 @@ body {
     to { transform: rotate(360deg); }
 }
 .playing {
-    animation: spin 3s linear infinite;
+    animation: spin 4s linear infinite;
+}
+
+/* --- STYLE SECTION TIMELINE PERJALANAN --- */
+.timeline-section {
+    padding: 60px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.timeline-title {
+    text-align: center;
+    color: #6b534e;
+    margin-bottom: 40px;
+    font-size: 1.5rem;
+}
+
+.timeline-container {
+    position: relative;
+    border-left: 2px dashed #8c736d;
+    padding-left: 30px;
+    margin-left: 20px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 35px;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -41px;
+    top: 4px;
+    width: 14px;
+    height: 14px;
+    background-color: #6b534e;
+    border-radius: 50%;
+    border: 3px solid #fcf8f2;
+}
+
+.timeline-date {
+    font-weight: bold;
+    color: #6b534e;
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.timeline-content {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 10px rgba(107, 83, 78, 0.04);
+    line-height: 1.5;
+}
+
+/* --- POP-UP MODAL SURAT CINTA (REVISI RESPONSIF ANTI-POTONG) --- */
+.custom-modal {
+    display: none;
+    position: fixed;
+    z-index: 10001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    
+    /* Mengubah sistem centering agar mendukung overflow scroll jika teks kepanjangan */
+    overflow-y: auto; 
+    padding: 40px 10px; /* Memberikan jarak aman atas-bawah layar saat di-scroll */
+}
+
+.letter-box {
+    background-color: #fffbf7;
+    background-image: linear-gradient(#f4ede4 1px, transparent 1px);
+    background-size: 100% 2em;
+    padding: 45px 30px;
+    width: 95%;
+    max-width: 550px;
+    border-radius: 12px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.3);
+    position: relative;
+    line-height: 2em;
+    
+    /* Penentu Centering Dinamis Aman */
+    margin: 30px auto; 
+    
+    /* Mengunci tinggi maksimal agar tidak menembus layar monitor & mengaktifkan internal scroll jika dibutuhkan */
+    max-height: calc(100vh - 100px);
+    overflow-y: auto; 
+    
+    animation: zoomMasukFoto 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.letter-box h3 {
+    color: #6b534e;
+    margin-bottom: 20px;
+    font-family: 'Georgia', serif;
+    font-size: 1.3rem;
+}
+
+.letter-content {
+    font-family: 'Georgia', serif;
+    font-size: 0.98rem;
+    color: #4a3e3d;
+    font-style: italic;
+    padding-right: 5px; /* Spasi mikro agar teks tidak nempel dengan scrollbar */
+}
+
+.letter-content p {
+    margin-bottom: 20px;
+    text-align: justify; /* Membuat teks paragraf surat menjadi rapi rata kanan-kiri */
+}
+
+.close-letter-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 30px;
+    font-weight: bold;
+    color: #8c736d;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.2s ease;
+}
+
+.close-letter-btn:hover {
+    color: #6b534e;
+}
+
+/* Kustomisasi Tampilan Scrollbar Internal Kertas Surat Agar Estetik */
+.letter-box::-webkit-scrollbar {
+    width: 6px;
+}
+.letter-box::-webkit-scrollbar-track {
+    background: transparent;
+}
+.letter-box::-webkit-scrollbar-thumb {
+    background: #e4dacb;
+    border-radius: 10px;
+}
+.letter-box::-webkit-scrollbar-thumb:hover {
+    background: #8c736d;
+}
+.letter-content {
+    font-family: 'Georgia', serif;
+    font-size: 0.95rem;
+    color: #4a3e3d;
+    font-style: italic;
+}
+
+.letter-content p {
+    margin-bottom: 15px;
+}
+
+.close-letter-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #8c736d;
+    cursor: pointer;
 }
 
 /* --- TAMPILAN LIGHTBOX (ZOOM FOTO) --- */
@@ -210,7 +379,7 @@ body {
     100% { opacity: 1; transform: scale(1); }
 }
 
-/* --- EFEK KELOPAK BUNGA SAKURA BERGUGURAN --- */
+/* --- EFEK SAKURA BERGUGURAN --- */
 .sakura {
     position: fixed;
     top: -10px;
@@ -227,7 +396,7 @@ body {
     100% { transform: translateY(105vh) rotate(720deg) translateX(100px); opacity: 0; }
 }
 
-/* --- GAYA JENDELA SAMBUTAN AWAL --- */
+/* --- JENDELA SAMBUTAN AWAL --- */
 .welcome-overlay {
     position: fixed;
     top: 0;
@@ -250,7 +419,6 @@ body {
     max-width: 450px;
     width: 85%;
     box-shadow: 0 10px 30px rgba(107, 83, 78, 0.1);
-    animation: gerakanMasukAwal 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .welcome-card h2 {
@@ -295,9 +463,74 @@ body {
     .header h1 { font-size: 1.8rem; }
     .gallery-container {
         grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
+        gap: 12px;
         padding: 5px;
     }
     .lightbox-content { max-width: 95%; }
-    .music-floating-btn { bottom: 15px; right: 15px; width: 45px; height: 45px; }
+    .floating-controls { bottom: 15px; right: 15px; gap: 10px; }
+    .floating-btn { width: 45px; height: 45px; }
+    .photo-caption { display: none; } 
+}
+
+/* --- PERBAIKAN WARNA DAN UKURAN TOMBOL KEMBALI KE ATAS --- */
+#back-to-top {
+    display: none;
+    position: fixed;
+    bottom: 150px; 
+    right: 25px;
+    z-index: 998;
+    
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    /* DISAMAKAN: Menggunakan warna cokelat solid asli menu Anda */
+    background-color: #6b534e; 
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Mengubah warna hover agar senada dengan tombol menu lain saat disentuh */
+#back-to-top:hover {
+    background-color: #8c736d;
+    transform: scale(1.1);
+}
+
+/* Penyesuaian Responsif untuk Layar HP */
+@media (max-width: 600px) {
+    #back-to-top { 
+        bottom: 130px; 
+        right: 15px; 
+        width: 45px;
+        height: 45px;
+    }
+}
+
+/* --- MANIPULASI FILTER WARNA DI DIGITAL UNTUK DAUN MAPLE --- */
+.maple-hijau {
+    filter: hue-rotate(90deg) brightness(1.1); /* Mengubah mple menjadi hijau segar */
+}
+
+.maple-kuning {
+    filter: hue-rotate(45deg) brightness(1.2); /* Mengubah maple menjadi kuning terang */
+}
+
+.maple-ungu {
+    filter: hue-rotate(280deg); /* Mengubah maple menjadi ungu romantis */
+}
+
+.maple-biru {
+    filter: hue-rotate(180deg) brightness(1.1); /* Mengubah maple menjadi biru estetik */
+}
+
+.maple-tua {
+    filter: hue-rotate(340deg) brightness(0.7); /* Mengubah maple menjadi merah gelap/maroon */
 }

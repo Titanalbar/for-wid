@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Memory Wall</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2280%22>❤️</text></svg>">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- JENDELA SAMBUTAN AWAL (UNTUK MEMANCING AUTOPLAY MUSIK) -->
     <div id="welcome-overlay" class="welcome-overlay">
         <div class="welcome-card">
             <h2>Spesial Untukmu, Widia ❤️</h2>
@@ -17,37 +17,55 @@
         </div>
     </div>
 
-    <!-- Tombol Musik Melayang -->
-    <button id="music-btn" class="music-floating-btn" title="Putar Musik">
-        <span class="music-icon">🎵</span>
-    </button>
+    <div class="floating-controls">
+        <button id="letter-btn" class="floating-btn" title="Surat Cinta Rahasia">
+            <span class="control-icon">✉️</span>
+        </button>
+        <button id="music-btn" class="floating-btn" title="Putar Musik">
+            <span class="music-icon">🎵</span>
+        </button>
+    </div>
     
-    <!-- Audio Element -->
+    <button id="back-to-top" title="Kembali ke Atas">▲</button>
+    
     <audio id="bg-music-1" src="lagu.mp3"></audio>
     <audio id="bg-music-2" src="lagu2.mp3"></audio>
     <audio id="bg-music-3" src="lagu3.mp3"></audio>
 
-    <!-- Header / Judul Web -->
     <header class="header">
-        <h1>Our Memory Wall</h1>
+        <h1 id="web-title">Our Memory Wall</h1>
         <p>Setiap foto punya cerita, dan setiap cerita selalu tentang kita. ❤️</p>
         
-        <!-- Wadah Hitungan Hari Jadian -->
         <div id="love-counter" class="love-counter">Menghitung momen indah...</div>
     </header>
 
-    <!-- Wadah Dinding Foto -->
     <main class="gallery-container" id="dinding-foto">
-        <!-- Foto diisi otomatis oleh script.js -->
     </main>
 
-    <!-- Jendela Pop-up Lightbox (Tempat Foto Membesar) -->
+    <div id="letter-modal" class="custom-modal">
+        <div class="letter-box">
+            <span class="close-letter-btn">&times;</span>
+            <h3>Untuk Widia tercinta, 🌸</h3>
+            <div class="letter-content">
+                <p>Hai Wid, lewat halaman web kecil ini, aku mau mengabadikan setiap jengkal tawa, senyuman, dan semua momen indah yang udah kita lalui bareng-bareng semenjak awal kenal sampai hari ini.</p>
+                <p>Inget gak? Awal kenal dulu kamu tuh dingin dan cuek banget, kalau balas chat bisa lama banget. Tapi untungnya aku gak menyerah buat nge-chat kamu, hehe.</p>
+                <p>Momen yang gak bakal aku lupain itu waktu tanggal 6 Mei 2026. Kamu baru balik mudik naik kereta dan sampai stasiun Jatinegara jam 1 malam. Karena aku khawatir kamu sendirian malam-malam, aku nekat nawarin buat jemput. Walau awalnya kamu menolak, akhirnya kamu mau juga. Foto pertama di dinding memori ini adalah foto yang kamu kirim malam itu buat ngasih tahu posisi kamu di stasiun, sebelum akhirnya aku anterin kamu sampai depan kost dengan aman. Sejak malam itu, kita makin dekat dan chat kita jadi makin intens.</p>
+                <p>Sampai akhirnya di tanggal 14 Mei 2026, di Kopi Nako Kemang, aku memberanikan diri buat menyatakan perasaan dan ngajakin kamu pacaran. Waktu kamu terima, rasanya senang dan bahagia banget! Sekarang kita udah resmi jalan bareng.</p>
+                <p>Aku bersyukur banget bisa kenal kamu. Kamu tuh cewek yang baik banget, kalem, saleha, dan gak pernah ngomong kasar—bener-bener sosok idaman yang bikin aku pengen banget buat halalin kamu dan nikah sama kamu suatu saat nanti, hehe.</p>
+                <p>Seru banget kalau ingat semua perjalanan kita; keliling Jakarta naik motor, ke Blok M, nongkrong di kafe, sampai motoran melewati Jenderal Sudirman, HI, dan Monas. Terakhir, trip kita ke Bandung juga berkesan banget! Naik kereta bareng, makan Ayam Bu Imas, sewa motor buat jalan-jalan, main gokart yang seru abis, makan bubur ayam DPR, sampai berburu cireng racing.</p>
+                <p>Paling lucu waktu kita ke Braga, foto box, makan es krim, dan makan cantik di Golden Pine. Kamu wajibin kita pakai dresscode hitam-hitam, padahal aku jarang banget pakai kemeja hitam, haha. Tapi hasilnya lucu banget dan banyak foto gemas kita di sana.</p>
+                <p>Makasih ya Wid udah mau jadi bagian terindah dalam cerita hidupku. Ditunggu next trip kita ya, sayang. *I love you so much!* ❤️</p>
+            </div>
+        </div>
+    </div>
+
     <div id="lightbox-modal" class="lightbox">
         <span class="close-btn">&times;</span>
         <img class="lightbox-content" id="lightbox-img" src="" alt="Zoom Foto">
         <div id="lightbox-caption" class="lightbox-caption"></div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
