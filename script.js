@@ -98,12 +98,19 @@ if (apakahHariUlangTahun) {
 const lightboxModal = document.getElementById('lightbox-modal');
 const lightboxImg = document.getElementById('lightbox-img');
 const lightboxCaption = document.getElementById('lightbox-caption');
+const lightboxDownloadBtn = document.getElementById('lightbox-download-btn');
 const closeBtn = document.querySelector('.close-btn');
 
 function bukaLightbox(src, caption) {
     lightboxModal.style.display = "block";
     lightboxImg.src = src;
     lightboxCaption.innerText = caption;
+    
+    // Set link dan nama file untuk download
+    if (lightboxDownloadBtn) {
+        lightboxDownloadBtn.href = src;
+        lightboxDownloadBtn.setAttribute('download', 'Momen-Widia-Tan.jpg');
+    }
 }
 
 closeBtn.addEventListener('click', function() {
