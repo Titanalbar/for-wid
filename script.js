@@ -1,5 +1,5 @@
 const galleryContainer = document.getElementById('dinding-foto');
-const totalFoto = 147; // Membaca foto (0) sampai foto (146)
+const totalFoto = 183; // Membaca foto (0) sampai foto (146)
 
 const daftarCaption = [
     "Momen Manis ✨", "Kebersamaan Kita 🌸", "Hari yang Bahagia 🥰", 
