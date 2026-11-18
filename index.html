@@ -5,9 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Memory Wall</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2280%22>❤️</text></svg>">
+    
+    <!-- Google Fonts: Playfair Display, Plus Jakarta Sans & Caveat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <!-- Garis Progres Membaca di Atas Layar -->
+    <div id="scroll-progress" class="scroll-progress"></div>
 
     <div id="welcome-overlay" class="welcome-overlay">
         <div class="welcome-card">
@@ -17,11 +26,14 @@
         </div>
     </div>
 
+    <!-- Notifikasi Melayang Judul Lagu -->
+    <div id="music-toast" class="music-toast"></div>
+
     <div class="floating-controls">
         <button id="letter-btn" class="floating-btn" title="Surat Cinta Rahasia">
             <span class="control-icon">✉️</span>
         </button>
-        <button id="music-btn" class="floating-btn" title="Putar Musik">
+        <button id="music-btn" class="floating-btn" title="Klik: Play/Pause | Klik 2x: Ganti Lagu">
             <span class="music-icon">🎵</span>
         </button>
     </div>
@@ -34,13 +46,22 @@
 
     <header class="header">
         <h1 id="web-title">Our Memory Wall</h1>
-        <p>Setiap foto punya cerita, dan setiap cerita selalu tentang kita. ❤️</p>
+        <p id="web-subtitle">Setiap foto punya cerita, dan setiap cerita selalu tentang kita. ❤️</p>
         
         <div id="love-counter" class="love-counter">Menghitung momen indah...</div>
     </header>
 
     <main class="gallery-container" id="dinding-foto">
     </main>
+
+    <!-- Penutup Halaman (Milestone Footer) -->
+    <footer class="memory-footer">
+        <div class="footer-divider">🌸 ✨ 🌸</div>
+        <p class="footer-milestones">
+            6 Mei 2026: Stasiun Jatinegara &bull; 14 Mei 2026: Kopi Nako Kemang &bull; Jakarta Night Ride &bull; Trip Bandung &bull; &amp; Masih Banyak Cerita Lagi... ♾️
+        </p>
+        <p class="footer-credit">Dibuat dengan penuh cinta oleh Titan untuk Widia Nurasifah ❤️</p>
+    </footer>
 
     <div id="letter-modal" class="custom-modal">
         <div class="letter-box">
@@ -55,7 +76,6 @@
                 <p>Seru banget kalau ingat semua perjalanan kita; keliling Jakarta naik motor, ke Blok M, nongkrong di kafe, sampai motoran melewati Jenderal Sudirman, HI, dan Monas. Terakhir, trip kita ke Bandung juga berkesan banget! Naik kereta bareng, makan Ayam Bu Imas, sewa motor buat jalan-jalan, main gokart yang seru abis, makan bubur ayam DPR, sampai berburu cireng racing.</p>
                 <p>Paling lucu waktu kita ke Braga, foto box, makan es krim, dan makan cantik di Golden Pine. Kamu wajibin kita pakai dresscode hitam-hitam, padahal aku jarang banget pakai kemeja hitam, haha. Tapi hasilnya lucu banget dan banyak foto gemas kita di sana.</p>
                 
-                <!-- PARAGRAF TAMBAHAN PERMINTAAN MAAF & HARAPAN -->
                 <p>Di balik semua kenangan manis ini, aku juga mau minta maaf ya, Wid... kalau dalam perjalanan hubungan kita, aku sering buat salah, bikin kamu kesel, kecewa, atau kurang paham sama perasaan kamu. Terima kasih banyak udah selalu sabar menghadapi aku. Aku berharap kita berdua bisa terus saling memaafkan lagi dan lagi, saling menguatkan, dan terus belajar memahami satu sama lain sampai nanti tujuan besar kita berdua terwujud—yaitu melangkah bersama sampai ke jenjang pernikahan. 💍✨</p>
                 
                 <p>Makasih ya Wid udah mau jadi bagian terindah dalam cerita hidupku. Ditunggu next trip kita ya, sayang. <i>I love you so much!</i> ❤️</p> 
@@ -65,7 +85,13 @@
 
     <div id="lightbox-modal" class="lightbox">
         <span class="close-btn">&times;</span>
-        <img class="lightbox-content" id="lightbox-img" src="" alt="Zoom Foto">
+        <button id="prev-btn" class="lightbox-nav prev-btn" title="Foto Sebelumnya">&#10094;</button>
+        <button id="next-btn" class="lightbox-nav next-btn" title="Foto Berikutnya">&#10095;</button>
+        
+        <div class="lightbox-img-wrapper">
+            <img class="lightbox-content" id="lightbox-img" src="" alt="Zoom Foto">
+            <div id="double-tap-heart" class="double-tap-heart">❤️</div>
+        </div>
         <div id="lightbox-caption" class="lightbox-caption"></div>
         <a id="lightbox-download-btn" class="download-btn" download target="_blank">Download Foto 📥</a>
     </div>

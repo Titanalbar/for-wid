@@ -1,5 +1,5 @@
 /* =======================================================
-   1. RESET DASAR & GLOBAL STYLE
+1. RESET DASAR, AMBIENT WARM GLOW & SCROLL PROGRESS BAR
    ======================================================= */
 * {
     margin: 0;
@@ -8,48 +8,69 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #fcf8f2;
+    background-image: 
+        radial-gradient(circle at 18% 8%, rgba(255, 218, 204, 0.45) 0%, transparent 42%),
+        radial-gradient(circle at 82% 14%, rgba(247, 226, 206, 0.5) 0%, transparent 45%);
+    background-attachment: fixed;
     color: #4a3e3d;
     padding: 20px;
     overflow-x: hidden;
 }
 
+/* Garis Progres Membaca di Atas Layar */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3.5px;
+    background: linear-gradient(90deg, #d89a8c, #8c736d, #6b534e);
+    z-index: 10010;
+    transition: width 0.1s ease-out;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
 /* Bagian Judul / Header */
 .header {
     text-align: center;
-    padding: 30px 20px;
+    padding: 35px 20px 25px 20px;
 }
 
 .header h1 {
-    font-size: 2.2rem;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.5rem;
+    font-weight: 700;
     color: #6b534e;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
 }
 
 .header p {
     font-style: italic;
     color: #8c736d;
-    font-size: 0.95rem;
+    font-size: 0.98rem;
 }
 
 /* --- DESAIN KOTAK HITUNG HARI JADIAN --- */
 .love-counter {
-    margin-top: 20px;
+    margin-top: 22px;
     display: inline-block;
-    background-color: #ffffff;
-    padding: 12px 25px;
+    background-color: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(107, 83, 78, 0.1);
+    padding: 12px 26px;
     border-radius: 30px;
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: #6b534e;
     font-weight: 600;
-    box-shadow: 0 4px 15px rgba(107, 83, 78, 0.08);
-    letter-spacing: 0.5px;
+    box-shadow: 0 6px 20px rgba(107, 83, 78, 0.07);
+    letter-spacing: 0.3px;
 }
 
 /* =======================================================
-   2. STRUKTUR GALERI FOTO & ANIMASI FADE-IN SMOOTH
+2. STRUKTUR GALERI FOTO (FULL-BLEED 1:1) & ANIMASI FADE-IN
    ======================================================= */
 .gallery-container {
     display: grid;
@@ -71,15 +92,15 @@ body {
     
     /* Kondisi awal foto KOSONG/TRANSPARAN & Agak Mengecil */
     opacity: 0;
-    transform: scale(0.9) translateY(15px);
+    transform: scale(0.92) translateY(18px);
     
-    /* Transisi naik-turun kartu yang sangat smooth saat di-hover dan saat muncul pertama kali */
-    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), 
+    /* Transisi naik-turun kartu yang sangat smooth saat di-hover dan saat muncul */
+    transition: transform 0.55s cubic-bezier(0.25, 1, 0.5, 1), 
                 box-shadow 0.3s ease, 
-                opacity 0.6s ease;
+                opacity 0.55s ease;
 }
 
-/* Class pemicu animasi muncul satu per satu */
+/* Class pemicu animasi muncul */
 .gallery-item.muncul {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -103,7 +124,7 @@ body {
     will-change: transform;    
 }
 
-/* Teks Caption Muncul Halus Dari Bawah */
+/* Teks Caption Muncul Halus Dari Bawah Saat Hover */
 .photo-caption {
     position: absolute;
     bottom: 15px;
@@ -116,6 +137,7 @@ body {
     text-align: center;
     padding: 11px;
     border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     opacity: 0;
     transform: translateY(10px);
     transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
@@ -128,7 +150,38 @@ body {
 }
 
 /* =======================================================
-   3. KONTROL MENU MELAYANG GANDA & TOMBOL BACK TO TOP
+3. MILESTONE FOOTER PENUTUP HALAMAN
+   ======================================================= */
+.memory-footer {
+    max-width: 750px;
+    margin: 50px auto 30px auto;
+    padding: 25px 20px;
+    text-align: center;
+    border-top: 1px dashed rgba(107, 83, 78, 0.25);
+}
+
+.footer-divider {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    letter-spacing: 4px;
+}
+
+.footer-milestones {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    color: #6b534e;
+    font-size: 0.96rem;
+    line-height: 1.7;
+    margin-bottom: 10px;
+}
+
+.footer-credit {
+    font-size: 0.82rem;
+    color: #8c736d;
+}
+
+/* =======================================================
+4. KONTROL MENU MELAYANG GANDA, TOAST MUSIK & BACK TO TOP
    ======================================================= */
 .floating-controls {
     position: fixed;
@@ -173,6 +226,34 @@ body {
     animation: spin 4s linear infinite;
 }
 
+/* Notifikasi Toast Judul Lagu */
+.music-toast {
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background-color: rgba(107, 83, 78, 0.95);
+    color: #fcf8f2;
+    padding: 10px 22px;
+    border-radius: 30px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    z-index: 1002;
+    opacity: 0;
+    pointer-events: none;
+    white-space: nowrap;
+    max-width: 90vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.music-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
 #back-to-top {
     display: none;
     position: fixed;
@@ -189,12 +270,15 @@ body {
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     
-    display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1rem;
     
     transition: background-color 0.3s, transform 0.2s;
+}
+
+#back-to-top.show {
+    display: flex;
 }
 
 #back-to-top:hover {
@@ -203,7 +287,7 @@ body {
 }
 
 /* =======================================================
-   4. POP-UP MODAL SURAT CINTA (RESPONSIF ANTI-POTONG)
+5. POP-UP MODAL SURAT CINTA (GAYA TULISAN TANGAN CAVEAT)
    ======================================================= */
 .custom-modal {
     display: none;
@@ -220,15 +304,15 @@ body {
 
 .letter-box {
     background-color: #fffbf7;
-    background-image: linear-gradient(#f4ede4 1px, transparent 1px);
-    background-size: 100% 2em;
-    padding: 45px 30px;
+    background-image: linear-gradient(#efe6da 1px, transparent 1px);
+    background-size: 100% 2.1em;
+    padding: 45px 32px;
     width: 95%;
-    max-width: 550px;
+    max-width: 560px;
     border-radius: 12px;
-    box-shadow: 0 10px 35px rgba(0,0,0,0.3);
+    box-shadow: 0 12px 38px rgba(0,0,0,0.3);
     position: relative;
-    line-height: 2em;
+    line-height: 2.1em;
     margin: 30px auto; 
     
     max-height: calc(100vh - 100px);
@@ -239,22 +323,23 @@ body {
 
 .letter-box h3 {
     color: #6b534e;
-    margin-bottom: 20px;
-    font-family: 'Georgia', serif;
-    font-size: 1.3rem;
+    margin-bottom: 18px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.35rem;
 }
 
 .letter-content {
-    font-family: 'Georgia', serif;
-    font-size: 0.98rem;
+    font-family: 'Caveat', 'Georgia', cursive;
+    font-size: 1.35rem;
+    font-weight: 500;
     color: #4a3e3d;
-    font-style: italic;
     padding-right: 5px;
+    letter-spacing: 0.2px;
 }
 
 .letter-content p {
     margin-bottom: 20px;
-    text-align: justify;
+    text-align: left;
 }
 
 .close-letter-btn {
@@ -289,41 +374,128 @@ body {
 }
 
 /* =======================================================
-   5. TAMPILAN LIGHTBOX (ZOOM FOTO)
+6. TAMPILAN LIGHTBOX (ZOOM FOTO + DOUBLE-TAP HEART)
    ======================================================= */
 .lightbox {
     display: none; 
     position: fixed;
     z-index: 1000;
-    padding-top: 50px;
+    padding-top: 48px;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(26, 21, 20, 0.95); 
     overflow: auto;
+    text-align: center;
+    user-select: none;
     animation: fadeInLatar 0.3s ease forwards;
+}
+
+.lightbox-img-wrapper {
+    position: relative;
+    display: inline-block;
+    max-width: 82%;
+    margin: auto;
 }
 
 .lightbox-content {
     margin: auto;
     display: block;
-    max-width: 85%;
-    max-height: 75vh;
-    border-radius: 4px;
-    box-shadow: 0 5px 25px rgba(0,0,0,0.5);
-    animation: zoomMasukFoto 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    max-width: 100%;
+    max-height: 73vh;
+    border-radius: 6px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.55);
+    cursor: pointer;
+    animation: zoomMasukFoto 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Animasi Hati Double-Tap di Tengah Foto */
+.double-tap-heart {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    font-size: 5rem;
+    opacity: 0;
+    pointer-events: none;
+    filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.45));
+}
+
+.double-tap-heart.animate {
+    animation: heartPop 0.85s cubic-bezier(0.17, 0.89, 0.32, 1.28) forwards;
+}
+
+@keyframes heartPop {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.2);
+    }
+    30% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    55% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+    75% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.25);
+    }
 }
 
 .close-btn {
     position: absolute;
-    top: 20px;
-    right: 35px;
+    top: 18px;
+    right: 30px;
     color: #f1f1f1;
     font-size: 40px;
     font-weight: bold;
     cursor: pointer;
-    z-index: 1001;
+    z-index: 1002;
+    transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+    color: #ffb7b2;
+}
+
+/* Tombol Panah Kiri & Kanan Lightbox */
+.lightbox-nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(107, 83, 78, 0.65);
+    color: #ffffff;
+    border: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    font-size: 1.3rem;
+    cursor: pointer;
+    z-index: 1002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+.lightbox-nav:hover {
+    background-color: rgba(140, 115, 109, 0.95);
+    transform: translateY(-50%) scale(1.08);
+}
+
+.prev-btn {
+    left: 20px;
+}
+
+.next-btn {
+    right: 20px;
 }
 
 .lightbox-caption {
@@ -332,8 +504,8 @@ body {
     width: 80%;
     text-align: center;
     color: #fcf8f2;
-    padding: 15px 0;
-    font-size: 1.1rem;
+    padding: 15px 0 5px 0;
+    font-size: 1.05rem;
     font-style: italic;
     animation: fadeInLatar 0.5s ease 0.2s backwards;
 }
@@ -344,14 +516,14 @@ body {
 }
 
 @keyframes zoomMasukFoto {
-    0% { opacity: 0; transform: scale(0.6); }
+    0% { opacity: 0; transform: scale(0.75); }
     100% { opacity: 1; transform: scale(1); }
 }
 
 /* --- STYLING TOMBOL DOWNLOAD DI LIGHTBOX --- */
 .download-btn {
     display: inline-block;
-    margin: 15px auto 25px auto;
+    margin: 12px auto 25px auto;
     padding: 10px 24px;
     background-color: #6b534e;
     color: #ffffff;
@@ -370,13 +542,8 @@ body {
     transform: scale(1.05);
 }
 
-/* Penyesuaian kontainer lightbox agar tombol berada di tengah */
-.lightbox {
-    text-align: center;
-}
-
 /* =======================================================
-   6. AMBIENT ANIMATION (SAKURA & MAPLE)
+7. AMBIENT ANIMATION (SAKURA, MAPLE & TAP SPARKLES)
    ======================================================= */
 .sakura {
     position: fixed;
@@ -394,6 +561,31 @@ body {
     100% { transform: translateY(105vh) rotate(720deg) translateX(100px); opacity: 0; }
 }
 
+/* Percikan Hati Saat Layar Diklik / Disentuh */
+.tap-sparkle {
+    position: fixed;
+    pointer-events: none;
+    user-select: none;
+    font-size: 1.15rem;
+    z-index: 10005;
+    animation: sparkleFloat 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes sparkleFloat {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.6);
+    }
+    50% {
+        opacity: 0.95;
+        transform: translate(-50%, -140%) scale(1.15);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -230%) scale(0.85);
+    }
+}
+
 /* Manipulasi Warna Digital Daun Maple via JS Class */
 .maple-hijau { filter: hue-rotate(90deg) brightness(1.1); }
 .maple-kuning { filter: hue-rotate(45deg) brightness(1.2); }
@@ -402,7 +594,7 @@ body {
 .maple-tua { filter: hue-rotate(340deg) brightness(0.7); }
 
 /* =======================================================
-   7. JENDELA SAMBUTAN AWAL
+8. JENDELA SAMBUTAN AWAL
    ======================================================= */
 .welcome-overlay {
     position: fixed;
@@ -411,6 +603,7 @@ body {
     width: 100%;
     height: 100%;
     background-color: #fcf8f2; 
+    background-image: radial-gradient(circle at center, rgba(255, 224, 212, 0.5) 0%, transparent 65%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -420,25 +613,27 @@ body {
 
 .welcome-card {
     background: #ffffff;
-    padding: 40px 30px;
-    border-radius: 20px;
+    padding: 42px 32px;
+    border-radius: 22px;
     text-align: center;
     max-width: 450px;
     width: 85%;
-    box-shadow: 0 10px 30px rgba(107, 83, 78, 0.1);
+    border: 1px solid rgba(107, 83, 78, 0.08);
+    box-shadow: 0 12px 34px rgba(107, 83, 78, 0.12);
 }
 
 .welcome-card h2 {
+    font-family: 'Playfair Display', Georgia, serif;
     color: #6b534e;
     margin-bottom: 15px;
-    font-size: 1.6rem;
+    font-size: 1.75rem;
 }
 
 .welcome-card p {
     color: #8c736d;
     font-size: 0.95rem;
-    line-height: 1.6;
-    margin-bottom: 25px;
+    line-height: 1.65;
+    margin-bottom: 26px;
     font-style: italic;
 }
 
@@ -446,12 +641,12 @@ body {
     background-color: #6b534e;
     color: #ffffff;
     border: none;
-    padding: 12px 35px;
+    padding: 13px 36px;
     font-size: 1rem;
     font-weight: 600;
     border-radius: 25px;
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(107, 83, 78, 0.2);
+    box-shadow: 0 5px 15px rgba(107, 83, 78, 0.22);
     transition: transform 0.2s ease, background-color 0.3s ease;
 }
 
@@ -466,7 +661,7 @@ body {
 }
 
 /* =======================================================
-   8. BLUR-UP LAZY LOADING EFFECT (Ide 1)
+9. BLUR-UP LAZY LOADING EFFECT
    ======================================================= */
 .blur-load {
     filter: blur(20px);
@@ -479,19 +674,31 @@ body {
 }
 
 /* =======================================================
-   9. RESPONSIVE BREAKPOINT UNTUK HANDPHONE (HP)
+10. RESPONSIVE BREAKPOINT UNTUK HANDPHONE (HP)
    ======================================================= */
 @media (max-width: 600px) {
-    .header h1 { font-size: 1.8rem; }
+    .header h1 { font-size: 1.95rem; }
+    .love-counter { font-size: 0.85rem; padding: 10px 18px; }
     .gallery-container {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
         padding: 5px;
     }
-    .lightbox-content { max-width: 95%; }
+    .photo-caption { display: none; }
+    .lightbox-img-wrapper { max-width: 90%; }
+    .lightbox-content { max-height: 66vh; }
+    .lightbox-nav {
+        width: 38px;
+        height: 38px;
+        font-size: 1.05rem;
+        background-color: rgba(107, 83, 78, 0.75);
+    }
+    .prev-btn { left: 8px; }
+    .next-btn { right: 8px; }
     .floating-controls { bottom: 15px; right: 15px; gap: 10px; }
     .floating-btn { width: 45px; height: 45px; }
-    .photo-caption { display: none; } 
+    .music-toast { bottom: 18px; font-size: 0.8rem; padding: 8px 16px; }
+    .letter-content { font-size: 1.25rem; }
     
     #back-to-top { 
         bottom: 130px; 

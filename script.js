@@ -1,5 +1,5 @@
 const galleryContainer = document.getElementById('dinding-foto');
-const totalFoto = 187; // Membaca foto (0) sampai foto (187)
+const totalFoto = 187; // Membaca foto (0) sampai foto (186)
 
 const daftarCaption = [
     "Momen Manis ✨", "Kebersamaan Kita 🌸", "Hari yang Bahagia 🥰", 
@@ -24,20 +24,20 @@ const daftarCaption = [
     "Saksi Bisu Kebahagiaan Kita 🤫❤️", "Hanya Kita yang Mengerti ✨🔗"
 ];
 
+// Simpan referensi elemen yang dirender untuk navigasi Next/Prev Lightbox
+const galeriTampil = [];
+
 // ==========================================
 // 1. ACAK URUTAN FOTO (FISHER-YATES SHUFFLE) + RENDER GALERI
 // ==========================================
-// Buat daftar indeks 0 sampai 182
 const urutanFoto = Array.from({ length: totalFoto }, (_, index) => index);
 
-// Acak urutan array secara merata setiap kali halaman dibuka
 for (let i = urutanFoto.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [urutanFoto[i], urutanFoto[j]] = [urutanFoto[j], urutanFoto[i]];
 }
 
-// Render kotak foto berdasarkan urutan yang sudah diacak
-urutanFoto.forEach((indeksFoto) => {
+urutanFoto.forEach((indeksFoto, posisiTampil) => {
     const captionAcak = daftarCaption[Math.floor(Math.random() * daftarCaption.length)];
     
     const galleryItem = document.createElement('div');
@@ -47,11 +47,9 @@ urutanFoto.forEach((indeksFoto) => {
     imgElement.src = `foto/foto (${indeksFoto}).jpg`; 
     imgElement.alt = `Momen Kita ${indeksFoto}`;
     
-    // Menerapkan Lazy Loading bawaan agar browser hemat bandwidth
     imgElement.className = 'blur-load';
     imgElement.setAttribute('loading', 'lazy');
     
-    // Menghilangkan efek blur setelah gambar selesai terunduh penuh
     imgElement.onload = function() {
         this.classList.add('loaded');
     };
@@ -80,48 +78,123 @@ urutanFoto.forEach((indeksFoto) => {
     galleryItem.appendChild(imgElement);
     galleryItem.appendChild(captionElement);
     
+    galeriTampil.push({ img: imgElement, caption: captionAcak });
+
     galleryItem.addEventListener('click', function() {
-        bukaLightbox(imgElement.src, captionAcak);
+        bukaLightbox(posisiTampil);
     });
 
     galleryContainer.appendChild(galleryItem);
 });
 
 // ==========================================
-// DETEKSI LOGIKA ULANG TAHUN WIDIA
+// 2. DETEKSI HARI SPESIAL (ULTAH, MENSIVERSARY & ANNIVERSARY)
 // ==========================================
+const tanggalJadian = new Date("2026-05-14T09:00:00");
 const tanggalUltahWidia = "10-17"; 
-const hariIni = new Date();
-const bulanTanggalSekarang = `${String(hariIni.getMonth() + 1).padStart(2, '0')}-${String(hariIni.getDate()).padStart(2, '0')}`;
-const apakahHariUlangTahun = (bulanTanggalSekarang === tanggalUltahWidia);
 
-if (apakahHariUlangTahun) {
-    window.addEventListener('DOMContentLoaded', () => {
-        const titleEl = document.getElementById('web-title');
-        if (titleEl) titleEl.innerHTML = "Happy Birthday, Widia! 🎂🎉";
-    });
-}
+const hariIni = new Date();
+const bulanSekarang = hariIni.getMonth() + 1;
+const tanggalSekarang = hariIni.getDate();
+const bulanTanggalSekarang = `${String(bulanSekarang).padStart(2, '0')}-${String(tanggalSekarang).padStart(2, '0')}`;
+
+const apakahHariUlangTahun = (bulanTanggalSekarang === tanggalUltahWidia);
+const apakahAnniversary = (bulanTanggalSekarang === "05-14" && hariIni.getFullYear() > 2026);
+const apakahMensiversary = (tanggalSekarang === 14 && !apakahAnniversary && hariIni >= tanggalJadian);
+const apakahHariSpesial = apakahHariUlangTahun || apakahAnniversary || apakahMensiversary;
+
+window.addEventListener('DOMContentLoaded', () => {
+    const titleEl = document.getElementById('web-title');
+    const subtitleEl = document.getElementById('web-subtitle');
+    if (!titleEl) return;
+
+    if (apakahHariUlangTahun) {
+        titleEl.innerHTML = "Happy Birthday, Widia! 🎂🎉";
+        if (subtitleEl) subtitleEl.innerText = "Semoga panjang umur, sehat selalu, dan semua doa baikmu terkabul. ❤️";
+    } else if (apakahAnniversary) {
+        const tahunKe = hariIni.getFullYear() - 2026;
+        titleEl.innerHTML = `Happy ${tahunKe} Year Anniversary, Sayang! 💍✨`;
+        if (subtitleEl) subtitleEl.innerText = "Terima kasih sudah bertahan dan tumbuh bersama sejauh ini. ❤️";
+    } else if (apakahMensiversary) {
+        const bulanKe = (hariIni.getFullYear() - 2026) * 12 + (bulanSekarang - 5);
+        if (bulanKe > 0) {
+            titleEl.innerHTML = `Happy Mensiversary ke-${bulanKe}, Widia! 🥰💖`;
+            if (subtitleEl) subtitleEl.innerText = "Satu bulan lagi terlewati dengan penuh cerita indah bersamamu. ✨";
+        }
+    }
+});
 
 // ==========================================
-// 2. LOGIKA LIGHTBOX (ZOOM FOTO)
+// 3. LOGIKA LIGHTBOX + NAVIGASI GESER + DOUBLE-TAP HEART
 // ==========================================
 const lightboxModal = document.getElementById('lightbox-modal');
 const lightboxImg = document.getElementById('lightbox-img');
 const lightboxCaption = document.getElementById('lightbox-caption');
 const lightboxDownloadBtn = document.getElementById('lightbox-download-btn');
+const doubleTapHeart = document.getElementById('double-tap-heart');
 const closeBtn = document.querySelector('.close-btn');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
 
-function bukaLightbox(src, caption) {
+let indeksLightboxSekarang = 0;
+
+function bukaLightbox(indeks) {
+    indeksLightboxSekarang = (indeks + galeriTampil.length) % galeriTampil.length;
+    const itemTerpilih = galeriTampil[indeksLightboxSekarang];
+
     lightboxModal.style.display = "block";
-    lightboxImg.src = src;
-    lightboxCaption.innerText = caption;
     
-    // Set link dan nama file untuk download
+    // Reset animasi zoom halus saat pindah foto
+    lightboxImg.style.animation = 'none';
+    lightboxImg.offsetHeight; // Trigger reflow
+    lightboxImg.style.animation = null;
+
+    lightboxImg.src = itemTerpilih.img.src;
+    lightboxCaption.innerText = `${itemTerpilih.caption} (${indeksLightboxSekarang + 1}/${galeriTampil.length})`;
+    
     if (lightboxDownloadBtn) {
-        lightboxDownloadBtn.href = src;
-        lightboxDownloadBtn.setAttribute('download', 'Momen-Widia-Tan.jpg');
+        lightboxDownloadBtn.href = itemTerpilih.img.src;
+        lightboxDownloadBtn.setAttribute('download', `Momen-Widia-Tan-${indeksLightboxSekarang + 1}.jpg`);
     }
 }
+
+function picuHatiLightbox() {
+    if (!doubleTapHeart) return;
+    doubleTapHeart.classList.remove('animate');
+    void doubleTapHeart.offsetWidth; // Trigger reflow agar animasi bisa berulang
+    doubleTapHeart.classList.add('animate');
+}
+
+// Double-Click di Desktop / Laptop pada foto Lightbox
+if (lightboxImg) {
+    lightboxImg.addEventListener('dblclick', (e) => {
+        e.stopPropagation();
+        picuHatiLightbox();
+    });
+
+    // Double-Tap di Layar Sentuh HP pada foto Lightbox
+    let waktuTapTerakhir = 0;
+    lightboxImg.addEventListener('touchend', (e) => {
+        const waktuSekarang = new Date().getTime();
+        const selisihTap = waktuSekarang - waktuTapTerakhir;
+        if (selisihTap > 0 && selisihTap < 300) {
+            e.preventDefault();
+            picuHatiLightbox();
+        }
+        waktuTapTerakhir = waktuSekarang;
+    });
+}
+
+function fotoBerikutnya() {
+    bukaLightbox(indeksLightboxSekarang + 1);
+}
+
+function fotoSebelumnya() {
+    bukaLightbox(indeksLightboxSekarang - 1);
+}
+
+if (prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); fotoSebelumnya(); });
+if (nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); fotoBerikutnya(); });
 
 closeBtn.addEventListener('click', function() {
     lightboxModal.style.display = "none";
@@ -133,19 +206,65 @@ lightboxModal.addEventListener('click', function(e) {
     }
 });
 
+// Navigasi Keyboard (Panah Kiri, Panah Kanan, Escape)
+document.addEventListener('keydown', function(e) {
+    if (lightboxModal.style.display === "block") {
+        if (e.key === "ArrowRight") fotoBerikutnya();
+        else if (e.key === "ArrowLeft") fotoSebelumnya();
+        else if (e.key === "Escape") lightboxModal.style.display = "none";
+    }
+});
+
+// Navigasi Touch Swipe di Layar HP
+let touchStartX = 0;
+lightboxModal.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+lightboxModal.addEventListener('touchend', (e) => {
+    const touchEndX = e.changedTouches[0].screenX;
+    const selisihSwipe = touchStartX - touchEndX;
+    if (Math.abs(selisihSwipe) > 50) {
+        if (selisihSwipe > 0) fotoBerikutnya();
+        else fotoSebelumnya();
+    }
+}, { passive: true });
+
 // ==========================================
-// 3. MULTI-PLAYER PLAYLIST + FADE CONTROL (Ide 3)
+// 4. MULTI-PLAYER PLAYLIST + TOAST NOTIFIKASI + DOUBLE-CLICK NEXT
 // ==========================================
 const players = [
     document.getElementById('bg-music-1'),
     document.getElementById('bg-music-2'),
     document.getElementById('bg-music-3')
 ];
+
+// Silakan ubah judul lagu di bawah ini sesuai nama file MP3 milikmu
+const daftarJudulLagu = [
+    "Lagu 1 - Melodi Untuk Widia 🎶",
+    "Lagu 2 - Cerita Kita Berdua 💖",
+    "Lagu 3 - Selamanya Bersamamu ✨"
+];
+
 let indeksLaguSekarang = 0;
-let isFading = false; // Flag pengunci tombol agar tidak bentrok saat proses fade
+let isFading = false;
+let toastTimeout = null;
+let clickTimer = null;
 
 const musicBtn = document.getElementById('music-btn');
 const musicIcon = musicBtn.querySelector('.music-icon');
+const musicToast = document.getElementById('music-toast');
+
+function tampilkanToastLagu(teks) {
+    if (!musicToast) return;
+    musicToast.innerText = teks;
+    musicToast.classList.add('show');
+    
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => {
+        musicToast.classList.remove('show');
+    }, 3200);
+}
 
 function eksekusiPutar(indeks) {
     players.forEach(p => {
@@ -154,22 +273,23 @@ function eksekusiPutar(indeks) {
 
     const activePlayer = players[indeks];
     if (activePlayer) {
-        // Fade-In saat ganti lagu otomatis atau pertama kali buka web
         activePlayer.volume = 0;
         activePlayer.play().then(() => {
             musicIcon.classList.add('playing');
             musicIcon.innerText = "💿";
-            musicBtn.title = "Pause Musik";
+            tampilkanToastLagu(`Memutar: ${daftarJudulLagu[indeks]}`);
             
+            isFading = true;
             let fadeInInterval = setInterval(() => {
                 if (activePlayer.volume < 0.9) {
                     activePlayer.volume = (parseFloat(activePlayer.volume) + 0.1).toFixed(1);
                 } else {
                     activePlayer.volume = 1.0;
                     clearInterval(fadeInInterval);
+                    isFading = false;
                 }
             }, 100);
-        }).catch(err => console.error("Autoplay safety triggered."));
+        }).catch(() => console.error("Autoplay safety triggered."));
     }
 }
 
@@ -182,51 +302,65 @@ players.forEach((player, indeks) => {
     }
 });
 
+// Klik 1x: Play/Pause dengan Fade | Klik 2x: Lompat ke Lagu Berikutnya
 musicBtn.addEventListener('click', function(e) {
     e.stopPropagation();
-    if (isFading) return; // Kunci tombol jika animasi transisi volume sedang berjalan
 
-    const activePlayer = players[indeksLaguSekarang];
-    if (!activePlayer) return;
+    if (clickTimer !== null) {
+        clearTimeout(clickTimer);
+        clickTimer = null;
+        isFading = false;
+        indeksLaguSekarang = (indeksLaguSekarang + 1) % players.length;
+        eksekusiPutar(indeksLaguSekarang);
+        return;
+    }
 
-    if (activePlayer.paused) {
-        // --- TRANSIFADE-IN (PLAY MUSIK) ---
-        activePlayer.volume = 0;
-        activePlayer.play().then(() => {
-            musicIcon.classList.add('playing');
-            musicIcon.innerText = "💿";
-            
+    clickTimer = setTimeout(() => {
+        clickTimer = null;
+        if (isFading) return;
+
+        const activePlayer = players[indeksLaguSekarang];
+        if (!activePlayer) return;
+
+        if (activePlayer.paused) {
+            activePlayer.volume = 0;
+            activePlayer.play().then(() => {
+                musicIcon.classList.add('playing');
+                musicIcon.innerText = "💿";
+                tampilkanToastLagu(`Memutar: ${daftarJudulLagu[indeksLaguSekarang]}`);
+                
+                isFading = true;
+                let fadeInInterval = setInterval(() => {
+                    if (activePlayer.volume < 0.9) {
+                        activePlayer.volume = (parseFloat(activePlayer.volume) + 0.1).toFixed(1);
+                    } else {
+                        activePlayer.volume = 1.0;
+                        clearInterval(fadeInInterval);
+                        isFading = false;
+                    }
+                }, 100);
+            }).catch(err => console.error(err));
+        } else {
             isFading = true;
-            let fadeInInterval = setInterval(() => {
-                if (activePlayer.volume < 0.9) {
-                    activePlayer.volume = (parseFloat(activePlayer.volume) + 0.1).toFixed(1);
+            tampilkanToastLagu("Musik dijeda ⏸️");
+            let fadeOutInterval = setInterval(() => {
+                if (activePlayer.volume > 0.1) {
+                    activePlayer.volume = (parseFloat(activePlayer.volume) - 0.1).toFixed(1);
                 } else {
-                    activePlayer.volume = 1.0;
-                    clearInterval(fadeInInterval);
+                    activePlayer.volume = 0;
+                    activePlayer.pause();
+                    musicIcon.classList.remove('playing');
+                    musicIcon.innerText = "🎵";
+                    clearInterval(fadeOutInterval);
                     isFading = false;
                 }
             }, 100);
-        }).catch(err => console.error(err));
-    } else {
-        // --- TRANSIFADE-OUT (PAUSE MUSIK) ---
-        isFading = true;
-        let fadeOutInterval = setInterval(() => {
-            if (activePlayer.volume > 0.1) {
-                activePlayer.volume = (parseFloat(activePlayer.volume) - 0.1).toFixed(1);
-            } else {
-                activePlayer.volume = 0;
-                activePlayer.pause();
-                musicIcon.classList.remove('playing');
-                musicIcon.innerText = "🎵";
-                clearInterval(fadeOutInterval);
-                isFading = false;
-            }
-        }, 100);
-    }
+        }
+    }, 240);
 });
 
 // ==========================================
-// LOGIKA POP-UP SURAT CINTA RAHASIA
+// 5. LOGIKA POP-UP SURAT CINTA RAHASIA
 // ==========================================
 const letterBtn = document.getElementById('letter-btn');
 const letterModal = document.getElementById('letter-modal');
@@ -248,10 +382,9 @@ if(letterBtn && letterModal && closeLetterBtn) {
 }
 
 // ==========================================
-// 4. LOGIKA HITUNG WAKTU JADIAN
+// 6. LOGIKA HITUNG WAKTU JADIAN
 // ==========================================
 function hitungWaktuJadian() {
-    const tanggalJadian = new Date("2026-05-14T09:00:00"); 
     const sekarang = new Date();
     const selisihWaktu = sekarang - tanggalJadian;
 
@@ -269,17 +402,16 @@ setInterval(hitungWaktuJadian, 1000);
 hitungWaktuJadian(); 
 
 // ==========================================
-// 5. LOGIKA HUJAN KELOPAK & DAUN MAPLE MULTI-WARNA
+// 7. HUJAN KELOPAK, DAUN MAPLE & PERCIKAN SENTUHAN (TAP SPARKLES)
 // ==========================================
 function buatKelopakSakura() {
     const sakura = document.createElement("div");
-    const customSakuraClass = "sakura";
-    sakura.className = customSakuraClass;
+    sakura.className = "sakura";
     
     const partikelBiasa = ["🌸", "🌸", "🌸", "🌸", "🌸", "💮", "🌼", "🌻", "🌺", "🍁", "🍁", "✨", "❤️"];
-    const partikelUltah = ["🎂", "🎈", "🎉", "💖", "✨", "🌸", "💮", "🍰"];
+    const partikelSpesial = ["🎂", "🎈", "🎉", "💖", "✨", "🌸", "💍", "❤️"];
     
-    const listSimbol = apakahHariUlangTahun ? partikelUltah : partikelBiasa;
+    const listSimbol = apakahHariSpesial ? partikelSpesial : partikelBiasa;
     const simbolTerpilih = listSimbol[Math.floor(Math.random() * listSimbol.length)];
     sakura.innerText = simbolTerpilih;
     
@@ -301,8 +433,21 @@ function buatKelopakSakura() {
 }
 setInterval(buatKelopakSakura, 300);
 
+// Percikan Hati & Kilau Saat Layar Diklik / Disentuh
+document.addEventListener('click', function(e) {
+    const simbolSparkle = ["❤️", "✨", "🌸", "💖"];
+    const sparkle = document.createElement("span");
+    sparkle.className = "tap-sparkle";
+    sparkle.innerText = simbolSparkle[Math.floor(Math.random() * simbolSparkle.length)];
+    sparkle.style.left = `${e.clientX}px`;
+    sparkle.style.top = `${e.clientY}px`;
+
+    document.body.appendChild(sparkle);
+    setTimeout(() => { sparkle.remove(); }, 900);
+});
+
 // ==========================================
-// 6. HOVER TAB TITLE DYNAMIC TRICK
+// 8. HOVER TAB TITLE DYNAMIC TRICK
 // ==========================================
 const judulAsliWeb = document.title;
 document.addEventListener('visibilitychange', () => {
@@ -314,20 +459,33 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // ==========================================
-// 7. LOGIKA KEMBALI KE ATAS / BACK TO TOP (KONDISI DASAR HALAMAN)
+// 9. SCROLL PROGRESS BAR & TOMBOL KEMBALI KE ATAS
 // ==========================================
 const backToTopBtn = document.getElementById("back-to-top");
+const scrollProgressBar = document.getElementById("scroll-progress");
 
-window.onscroll = function() {
-    const posisiScroll = window.innerHeight + window.scrollY;
+window.addEventListener('scroll', () => {
+    const scrollAtas = window.scrollY;
+    const tinggiBisaDiScroll = document.documentElement.scrollHeight - window.innerHeight;
+    
+    // Update panjang garis progres di atas layar
+    if (scrollProgressBar && tinggiBisaDiScroll > 0) {
+        const persentaseScroll = (scrollAtas / tinggiBisaDiScroll) * 100;
+        scrollProgressBar.style.width = `${Math.min(100, Math.max(0, persentaseScroll))}%`;
+    }
+
+    // Munculkan tombol Back to Top di area bawah halaman
+    const posisiScroll = window.innerHeight + scrollAtas;
     const totalTinggiHalaman = document.documentElement.scrollHeight;
     
-    if (posisiScroll >= totalTinggiHalaman - 150) {
-        if (backToTopBtn) backToTopBtn.style.display = "block";
-    } else {
-        if (backToTopBtn) backToTopBtn.style.display = "none";
+    if (backToTopBtn) {
+        if (posisiScroll >= totalTinggiHalaman - 250) {
+            backToTopBtn.classList.add("show");
+        } else {
+            backToTopBtn.classList.remove("show");
+        }
     }
-};
+}, { passive: true });
 
 if (backToTopBtn) {
     backToTopBtn.addEventListener("click", () => {
@@ -336,10 +494,40 @@ if (backToTopBtn) {
 }
 
 // ==========================================
-// LOGIKA TOMBOL SAMBUTAN & ANIMASI MUNCUL SMOOTH FLOW
+// 10. TOMBOL SAMBUTAN & SMART SCROLL-REVEAL (INTERSECTION OBSERVER)
 // ==========================================
 const welcomeOverlay = document.getElementById('welcome-overlay');
 const startBtn = document.getElementById('start-btn');
+
+function aktifkanScrollReveal() {
+    const semuaFoto = document.querySelectorAll('.gallery-item');
+    let antreanBatch = 0;
+
+    const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                const kartu = entry.target;
+                const jeda = antreanBatch * 65;
+                antreanBatch++;
+
+                setTimeout(() => {
+                    kartu.classList.add('muncul');
+                }, jeda);
+
+                obs.unobserve(kartu);
+
+                setTimeout(() => {
+                    antreanBatch = 0;
+                }, 400);
+            }
+        });
+    }, {
+        threshold: 0.08,
+        rootMargin: "0px 0px -30px 0px"
+    });
+
+    semuaFoto.forEach(foto => observer.observe(foto));
+}
 
 if (startBtn && welcomeOverlay) {
     startBtn.addEventListener('click', function() {
@@ -348,12 +536,6 @@ if (startBtn && welcomeOverlay) {
         players.forEach(p => { if(p) p.load(); });
         eksekusiPutar(indeksLaguSekarang);
         
-        const semuaFoto = document.querySelectorAll('.gallery-item');
-        
-        semuaFoto.forEach((foto, indeks) => {
-            setTimeout(() => {
-                foto.classList.add('muncul');
-            }, indeks * 35); 
-        });
+        aktifkanScrollReveal();
     });
 }
