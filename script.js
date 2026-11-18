@@ -1,5 +1,5 @@
 const galleryContainer = document.getElementById('dinding-foto');
-const totalFoto = 183; // Membaca foto (0) sampai foto (146)
+const totalFoto = 187; // Membaca foto (0) sampai foto (187)
 
 const daftarCaption = [
     "Momen Manis ✨", "Kebersamaan Kita 🌸", "Hari yang Bahagia 🥰", 
@@ -25,17 +25,27 @@ const daftarCaption = [
 ];
 
 // ==========================================
-// 1. GENERATE KOTAK FOTO MASSAL + LAZY LOADING BLUR-UP
+// 1. ACAK URUTAN FOTO (FISHER-YATES SHUFFLE) + RENDER GALERI
 // ==========================================
-for (let i = 0; i < totalFoto; i++) {
+// Buat daftar indeks 0 sampai 182
+const urutanFoto = Array.from({ length: totalFoto }, (_, index) => index);
+
+// Acak urutan array secara merata setiap kali halaman dibuka
+for (let i = urutanFoto.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [urutanFoto[i], urutanFoto[j]] = [urutanFoto[j], urutanFoto[i]];
+}
+
+// Render kotak foto berdasarkan urutan yang sudah diacak
+urutanFoto.forEach((indeksFoto) => {
     const captionAcak = daftarCaption[Math.floor(Math.random() * daftarCaption.length)];
     
     const galleryItem = document.createElement('div');
     galleryItem.className = 'gallery-item';
 
     const imgElement = document.createElement('img');
-    imgElement.src = `foto/foto (${i}).jpg`; 
-    imgElement.alt = `Momen Kita ${i}`;
+    imgElement.src = `foto/foto (${indeksFoto}).jpg`; 
+    imgElement.alt = `Momen Kita ${indeksFoto}`;
     
     // Menerapkan Lazy Loading bawaan agar browser hemat bandwidth
     imgElement.className = 'blur-load';
@@ -49,16 +59,16 @@ for (let i = 0; i < totalFoto; i++) {
     let urutanCek = 1;
     imgElement.onerror = function() {
         if (urutanCek === 1) {
-            this.src = `foto/foto (${i}).jpeg`;
+            this.src = `foto/foto (${indeksFoto}).jpeg`;
             urutanCek = 2;
         } else if (urutanCek === 2) {
-            this.src = `foto/foto (${i}).JPG`;
+            this.src = `foto/foto (${indeksFoto}).JPG`;
             urutanCek = 3;
         } else if (urutanCek === 3) {
-            this.src = `foto/foto  (${i}).jpg`;
+            this.src = `foto/foto  (${indeksFoto}).jpg`;
             urutanCek = 4;
         } else if (urutanCek === 4) {
-            this.src = `foto/foto  (${i}).jpeg`;
+            this.src = `foto/foto  (${indeksFoto}).jpeg`;
             urutanCek = 5;
         }
     };
@@ -75,7 +85,7 @@ for (let i = 0; i < totalFoto; i++) {
     });
 
     galleryContainer.appendChild(galleryItem);
-}
+});
 
 // ==========================================
 // DETEKSI LOGIKA ULANG TAHUN WIDIA
@@ -263,7 +273,7 @@ hitungWaktuJadian();
 // ==========================================
 function buatKelopakSakura() {
     const sakura = document.createElement("div");
-    customSakuraClass = "sakura";
+    const customSakuraClass = "sakura";
     sakura.className = customSakuraClass;
     
     const partikelBiasa = ["🌸", "🌸", "🌸", "🌸", "🌸", "💮", "🌼", "🌻", "🌺", "🍁", "🍁", "✨", "❤️"];
