@@ -54,12 +54,59 @@ body {
     font-size: 0.98rem;
 }
 
-/* --- DESAIN KOTAK HITUNG HARI JADIAN --- */
+/* Live Memory Counter Badge */
+.memory-badge {
+    margin-top: 12px;
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #6b534e;
+    background-color: rgba(255, 255, 255, 0.75);
+    border: 1px dashed rgba(107, 83, 78, 0.25);
+    padding: 5px 15px;
+    border-radius: 20px;
+    letter-spacing: 0.2px;
+}
+
+/* --- PENGALIH MODE LOVE COUNTER & COUNTDOWN --- */
+.counter-mode-switch {
+    margin-top: 16px;
+    display: flex;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+    gap: 4px;
+    background-color: rgba(107, 83, 78, 0.08);
+    padding: 4px;
+    border-radius: 25px;
+}
+
+.mode-tab {
+    border: none;
+    background: transparent;
+    color: #8c736d;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.mode-tab.active {
+    background-color: #ffffff;
+    color: #6b534e;
+    box-shadow: 0 2px 8px rgba(107, 83, 78, 0.12);
+}
+
+/* --- DESAIN KOTAK HITUNG HARI JADIAN INTERAKTIF --- */
 .love-counter {
-    margin-top: 22px;
+    margin-top: 12px;
     display: inline-block;
     background-color: rgba(255, 255, 255, 0.92);
-    border: 1px solid rgba(107, 83, 78, 0.1);
+    border: 1px solid rgba(107, 83, 78, 0.12);
     padding: 12px 26px;
     border-radius: 30px;
     font-size: 0.95rem;
@@ -67,10 +114,101 @@ body {
     font-weight: 600;
     box-shadow: 0 6px 20px rgba(107, 83, 78, 0.07);
     letter-spacing: 0.3px;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.love-counter:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(107, 83, 78, 0.13);
+    background-color: #ffffff;
+}
+
+.love-counter:active {
+    transform: scale(0.97);
+}
+
+/* Indikator Progres Countdown */
+.countdown-progress-wrap {
+    display: none;
+    max-width: 340px;
+    margin: 12px auto 0 auto;
+    text-align: center;
+}
+
+.countdown-progress-wrap.visible {
+    display: block;
+}
+
+.countdown-progress-track {
+    width: 100%;
+    height: 6px;
+    background-color: rgba(107, 83, 78, 0.12);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.countdown-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #d89a8c, #6b534e);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.countdown-target-label {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.78rem;
+    color: #8c736d;
+    font-weight: 500;
+}
+
+/* Kutipan Kejutan di Bawah Love Counter */
+.love-quote {
+    margin-top: 10px;
+    min-height: 22px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-size: 0.94rem;
+    color: #8c736d;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.love-quote.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Partikel Hati Semburan dari Love Counter */
+.counter-burst-heart {
+    position: fixed;
+    pointer-events: none;
+    user-select: none;
+    font-size: 1.05rem;
+    z-index: 10006;
+    animation: burstOut 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes burstOut {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    70% {
+        opacity: 0.95;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.15);
+    }
 }
 
 /* =======================================================
-2. STRUKTUR GALERI FOTO (FULL-BLEED 1:1) & ANIMASI FADE-IN
+2. STRUKTUR GALERI FOTO (FULL-BLEED 1:1) & PERFORMA MOBILE
    ======================================================= */
 .gallery-container {
     display: grid;
@@ -83,30 +221,29 @@ body {
 
 .gallery-item {
     position: relative;
-    background-color: #ffffff;
+    background-color: #f4ede4;
     overflow: hidden; 
     aspect-ratio: 1 / 1; 
     border-radius: 12px; 
     box-shadow: 0 4px 12px rgba(107, 83, 78, 0.06);
     cursor: pointer;
     
-    /* Kondisi awal foto KOSONG/TRANSPARAN & Agak Mengecil */
+    content-visibility: auto;
+    contain-intrinsic-size: 280px 280px;
+    
     opacity: 0;
     transform: scale(0.92) translateY(18px);
     
-    /* Transisi naik-turun kartu yang sangat smooth saat di-hover dan saat muncul */
     transition: transform 0.55s cubic-bezier(0.25, 1, 0.5, 1), 
                 box-shadow 0.3s ease, 
                 opacity 0.55s ease;
 }
 
-/* Class pemicu animasi muncul */
 .gallery-item.muncul {
     opacity: 1;
     transform: scale(1) translateY(0);
 }
 
-/* Saat disentuh kursor, kartu bergeser naik 6px ke atas secara lurus & halus */
 .gallery-item.muncul:hover {
     transform: translateY(-6px) scale(1);
     box-shadow: 0 15px 30px rgba(107, 83, 78, 0.15);
@@ -150,10 +287,10 @@ body {
 }
 
 /* =======================================================
-3. MILESTONE FOOTER PENUTUP HALAMAN
+3. INTERACTIVE MILESTONE FOOTER & MODAL CERITA PERJALANAN
    ======================================================= */
 .memory-footer {
-    max-width: 750px;
+    max-width: 780px;
     margin: 50px auto 30px auto;
     padding: 25px 20px;
     text-align: center;
@@ -162,22 +299,90 @@ body {
 
 .footer-divider {
     font-size: 1.1rem;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     letter-spacing: 4px;
 }
 
-.footer-milestones {
-    font-family: 'Playfair Display', Georgia, serif;
+.footer-hint {
+    font-size: 0.8rem;
+    color: #8c736d;
     font-style: italic;
+    margin-bottom: 14px;
+}
+
+.milestone-pills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.milestone-chip {
+    background-color: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(107, 83, 78, 0.16);
     color: #6b534e;
-    font-size: 0.96rem;
-    line-height: 1.7;
-    margin-bottom: 10px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 0.86rem;
+    padding: 8px 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(107, 83, 78, 0.06);
+    transition: transform 0.2s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.milestone-chip:hover {
+    transform: translateY(-2px);
+    background-color: #ffffff;
+    box-shadow: 0 6px 16px rgba(107, 83, 78, 0.13);
 }
 
 .footer-credit {
     font-size: 0.82rem;
     color: #8c736d;
+}
+
+/* Kartu Modal Cerita Milestone */
+.milestone-card {
+    background-color: #fffbf7;
+    padding: 36px 28px;
+    width: 92%;
+    max-width: 440px;
+    border-radius: 18px;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+    position: relative;
+    text-align: center;
+    margin: auto;
+    animation: zoomMasukFoto 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.milestone-icon {
+    font-size: 2.4rem;
+    margin-bottom: 8px;
+}
+
+.milestone-date {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #8c736d;
+    background-color: rgba(107, 83, 78, 0.08);
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
+
+.milestone-card h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #6b534e;
+    font-size: 1.45rem;
+    margin-bottom: 14px;
+}
+
+.milestone-card p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #4a3e3d;
 }
 
 /* =======================================================
@@ -287,7 +492,7 @@ body {
 }
 
 /* =======================================================
-5. POP-UP MODAL SURAT CINTA (GAYA TULISAN TANGAN CAVEAT)
+5. ANIMASI AMPLOP TERBUKA, SURAT CINTA, VOICE NOTE & KAPSUL WAKTU
    ======================================================= */
 .custom-modal {
     display: none;
@@ -297,12 +502,135 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(26, 21, 20, 0.58);
+    align-items: center;
+    justify-content: center;
     overflow-y: auto; 
-    padding: 40px 10px;
+    padding: 30px 10px;
 }
 
+/* Stage Amplop Kertas */
+.envelope-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: zoomMasukFoto 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.envelope-stage.fade-away {
+    opacity: 0;
+    transform: scale(1.08) translateY(-15px);
+}
+
+.envelope-card {
+    position: relative;
+    width: 280px;
+    height: 185px;
+    background-color: #e8d8c8;
+    border-radius: 10px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    perspective: 800px;
+    cursor: pointer;
+}
+
+/* Tutup Segitiga Atas Amplop */
+.envelope-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 140px solid transparent;
+    border-right: 140px solid transparent;
+    border-top: 102px solid #d5bfa9;
+    transform-origin: top center;
+    transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.2s;
+    z-index: 4;
+}
+
+.envelope-card.open .envelope-flap {
+    transform: rotateX(180deg);
+    z-index: 1;
+}
+
+/* Kertas Surat Menyembul dari Dalam Amplop */
+.envelope-paper-preview {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 14px;
+    height: 140px;
+    background-color: #fffbf7;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 18px;
+    font-family: 'Caveat', cursive;
+    font-size: 1.45rem;
+    color: #6b534e;
+    z-index: 2;
+    transition: transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s;
+}
+
+.envelope-card.open .envelope-paper-preview {
+    transform: translateY(-58px);
+}
+
+/* Kantong Bawah & Samping Amplop */
+.envelope-pocket {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 140px solid #efe3d6;
+    border-right: 140px solid #eadbce;
+    border-bottom: 98px solid #f5ece2;
+    border-top: 87px solid transparent;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    z-index: 3;
+}
+
+/* Segel Hati di Tengah Amplop */
+.envelope-seal {
+    position: absolute;
+    top: 88px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 42px;
+    height: 42px;
+    background-color: #fffbf7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    box-shadow: 0 4px 10px rgba(107, 83, 78, 0.25);
+    z-index: 5;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.envelope-card.open .envelope-seal {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+}
+
+.envelope-hint {
+    margin-top: 18px;
+    color: #fcf8f2;
+    font-size: 0.92rem;
+    font-style: italic;
+    letter-spacing: 0.3px;
+}
+
+/* Lembaran Surat Utama */
 .letter-box {
+    display: none;
     background-color: #fffbf7;
     background-image: linear-gradient(#efe6da 1px, transparent 1px);
     background-size: 100% 2.1em;
@@ -313,12 +641,54 @@ body {
     box-shadow: 0 12px 38px rgba(0,0,0,0.3);
     position: relative;
     line-height: 2.1em;
-    margin: 30px auto; 
+    margin: auto; 
     
-    max-height: calc(100vh - 100px);
+    max-height: calc(100vh - 80px);
     overflow-y: auto; 
     
-    animation: zoomMasukFoto 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: zoomMasukFoto 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Indikator Progres Baca di Atas Kertas Surat */
+.letter-progress {
+    position: sticky;
+    top: -45px;
+    left: 0;
+    width: 0%;
+    height: 3.5px;
+    background: linear-gradient(90deg, #d89a8c, #6b534e);
+    border-radius: 2px;
+    z-index: 12;
+    margin-bottom: 12px;
+    transition: width 0.1s ease-out;
+}
+
+/* Tab Surat Sekarang vs Kapsul Waktu */
+.letter-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(107, 83, 78, 0.15);
+    padding-bottom: 12px;
+}
+
+.letter-tab-btn {
+    border: 1px solid rgba(107, 83, 78, 0.18);
+    background-color: rgba(255, 255, 255, 0.7);
+    color: #8c736d;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.letter-tab-btn.active {
+    background-color: #6b534e;
+    color: #ffffff;
+    border-color: #6b534e;
 }
 
 .letter-box h3 {
@@ -340,6 +710,76 @@ body {
 .letter-content p {
     margin-bottom: 20px;
     text-align: left;
+}
+
+/* Pemutar Pesan Suara Rahasia di Dalam Surat (Tersembunyi agar surat murni tulisan) */
+.voicenote-card {
+    display: none !important;
+}
+
+.voicenote-card.hidden {
+    display: none;
+}
+
+.voicenote-header {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b534e;
+    margin-bottom: 8px;
+}
+
+.voicenote-card audio {
+    width: 100%;
+    height: 40px;
+    border-radius: 8px;
+}
+
+/* Panel Kapsul Waktu */
+.capsule-panel {
+    display: none;
+    line-height: 1.65;
+}
+
+.capsule-locked-view {
+    text-align: center;
+    padding: 25px 12px;
+    background-color: rgba(246, 237, 228, 0.65);
+    border: 1px dashed rgba(107, 83, 78, 0.3);
+    border-radius: 14px;
+}
+
+.capsule-lock-icon {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.capsule-desc {
+    font-size: 0.92rem;
+    color: #6b534e;
+    margin-bottom: 14px;
+}
+
+.capsule-date-badge {
+    display: inline-block;
+    background-color: #6b534e;
+    color: #fcf8f2;
+    font-size: 0.84rem;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+}
+
+.capsule-countdown {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.02rem;
+    font-weight: 600;
+    color: #6b534e;
+}
+
+.capsule-unlocked-view {
+    display: none;
+    line-height: 2.1em;
 }
 
 .close-letter-btn {
@@ -374,7 +814,7 @@ body {
 }
 
 /* =======================================================
-6. TAMPILAN LIGHTBOX (ZOOM FOTO + DOUBLE-TAP HEART)
+6. TAMPILAN LIGHTBOX (ZOOM FOTO, KEN BURNS SLIDESHOW & HEART)
    ======================================================= */
 .lightbox {
     display: none; 
@@ -397,17 +837,38 @@ body {
     display: inline-block;
     max-width: 82%;
     margin: auto;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.55);
 }
 
 .lightbox-content {
     margin: auto;
     display: block;
     max-width: 100%;
-    max-height: 73vh;
+    max-height: 70vh;
     border-radius: 6px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.55);
     cursor: pointer;
     animation: zoomMasukFoto 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Efek Sinematik Ken Burns saat Slideshow Aktif */
+.lightbox-content.ken-burns {
+    animation: kenBurnsCinematic 4.3s ease-out forwards;
+}
+
+@keyframes kenBurnsCinematic {
+    0% {
+        opacity: 0.35;
+        transform: scale(1) translate(0, 0);
+    }
+    15% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1.09) translate(-1%, -1%);
+    }
 }
 
 /* Animasi Hati Double-Tap di Tengah Foto */
@@ -504,7 +965,7 @@ body {
     width: 80%;
     text-align: center;
     color: #fcf8f2;
-    padding: 15px 0 5px 0;
+    padding: 15px 0 8px 0;
     font-size: 1.05rem;
     font-style: italic;
     animation: fadeInLatar 0.5s ease 0.2s backwards;
@@ -520,26 +981,44 @@ body {
     100% { opacity: 1; transform: scale(1); }
 }
 
-/* --- STYLING TOMBOL DOWNLOAD DI LIGHTBOX --- */
+/* Baris Tombol Slideshow & Download di Lightbox */
+.lightbox-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 10px auto 25px auto;
+    flex-wrap: wrap;
+}
+
+.slideshow-btn,
 .download-btn {
-    display: inline-block;
-    margin: 12px auto 25px auto;
-    padding: 10px 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 22px;
     background-color: #6b534e;
     color: #ffffff;
+    border: none;
     text-decoration: none;
-    font-size: 0.9rem;
+    font-family: inherit;
+    font-size: 0.88rem;
     font-weight: 600;
     border-radius: 20px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     transition: background-color 0.3s ease, transform 0.2s ease;
     cursor: pointer;
-    text-align: center;
 }
 
+.slideshow-btn:hover,
 .download-btn:hover {
     background-color: #8c736d;
     transform: scale(1.05);
+}
+
+.slideshow-btn.active {
+    background-color: #9e6b63;
+    box-shadow: 0 0 0 2px rgba(255, 218, 204, 0.5), 0 4px 14px rgba(0,0,0,0.35);
 }
 
 /* =======================================================
@@ -664,8 +1143,8 @@ body {
 9. BLUR-UP LAZY LOADING EFFECT
    ======================================================= */
 .blur-load {
-    filter: blur(20px);
-    transition: filter 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    filter: blur(18px);
+    transition: filter 0.45s cubic-bezier(0.25, 1, 0.5, 1);
     background-color: #f4ede4;
 }
 
@@ -679,14 +1158,19 @@ body {
 @media (max-width: 600px) {
     .header h1 { font-size: 1.95rem; }
     .love-counter { font-size: 0.85rem; padding: 10px 18px; }
+    .countdown-progress-wrap { max-width: 280px; }
+    .love-quote { font-size: 0.86rem; padding: 0 12px; }
     .gallery-container {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
         padding: 5px;
     }
+    .gallery-item {
+        contain-intrinsic-size: 165px 165px;
+    }
     .photo-caption { display: none; }
     .lightbox-img-wrapper { max-width: 90%; }
-    .lightbox-content { max-height: 66vh; }
+    .lightbox-content { max-height: 62vh; }
     .lightbox-nav {
         width: 38px;
         height: 38px;
@@ -695,10 +1179,12 @@ body {
     }
     .prev-btn { left: 8px; }
     .next-btn { right: 8px; }
+    .slideshow-btn, .download-btn { padding: 9px 18px; font-size: 0.83rem; }
     .floating-controls { bottom: 15px; right: 15px; gap: 10px; }
     .floating-btn { width: 45px; height: 45px; }
     .music-toast { bottom: 18px; font-size: 0.8rem; padding: 8px 16px; }
     .letter-content { font-size: 1.25rem; }
+    .milestone-chip { font-size: 0.8rem; padding: 7px 13px; }
     
     #back-to-top { 
         bottom: 130px; 

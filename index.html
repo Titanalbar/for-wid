@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Memory Wall</title>
+
+    <!-- Web App Manifest & Mobile Home Screen Support -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6b534e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Memory Wall ❤️">
+
+    <!-- Open Graph & WhatsApp Link Preview -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://titanalbar.github.io/for-wid/">
+    <meta property="og:title" content="Our Memory Wall — Spesial Untuk Widia ❤️">
+    <meta property="og:description" content="Setiap foto punya cerita, dan setiap cerita selalu tentang kita. ✨">
+    <meta property="og:image" content="https://titanalbar.github.io/for-wid/foto/foto%20(1).jpg">
+    <meta name="twitter:card" content="summary_large_image">
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2280%22>❤️</text></svg>">
     
     <!-- Google Fonts: Playfair Display, Plus Jakarta Sans & Caveat -->
@@ -30,7 +46,7 @@
     <div id="music-toast" class="music-toast"></div>
 
     <div class="floating-controls">
-        <button id="letter-btn" class="floating-btn" title="Surat Cinta Rahasia">
+        <button id="letter-btn" class="floating-btn" title="Surat Cinta & Kapsul Waktu">
             <span class="control-icon">✉️</span>
         </button>
         <button id="music-btn" class="floating-btn" title="Klik: Play/Pause | Klik 2x: Ganti Lagu">
@@ -40,45 +56,131 @@
     
     <button id="back-to-top" title="Kembali ke Atas">▲</button>
     
-    <audio id="bg-music-1" src="lagu/lagu.mp3"></audio>
-    <audio id="bg-music-2" src="lagu/lagu2.mp3"></audio>
-    <audio id="bg-music-3" src="lagu/lagu3.mp3"></audio>
+    <audio id="bg-music-1" src="lagu/lagu.mp3" preload="none"></audio>
+    <audio id="bg-music-2" src="lagu/lagu2.mp3" preload="none"></audio>
+    <audio id="bg-music-3" src="lagu/lagu3.mp3" preload="none"></audio>
 
     <header class="header">
         <h1 id="web-title">Our Memory Wall</h1>
         <p id="web-subtitle">Setiap foto punya cerita, dan setiap cerita selalu tentang kita. ❤️</p>
         
-        <div id="love-counter" class="love-counter">Menghitung momen indah...</div>
+        <!-- Live Memory Counter Badge -->
+        <div id="memory-badge" class="memory-badge">Menghitung koleksi kenangan... 📸</div>
+
+        <!-- Pengalih Mode Waktu Bersama & Hitung Mundur Momen Spesial -->
+        <div class="counter-mode-switch" role="tablist" aria-label="Mode Penghitung Waktu">
+            <button id="mode-together-btn" class="mode-tab active" type="button">Waktu Bersama ✨</button>
+            <button id="mode-countdown-btn" class="mode-tab" type="button">Hitung Mundur ⏳</button>
+        </div>
+
+        <div id="love-counter" class="love-counter" title="Ketuk untuk kejutan kecil ✨">Menghitung momen indah...</div>
+        
+        <!-- Indikator Progres Menuju Momen Spesial (Muncul saat Mode Countdown) -->
+        <div id="countdown-progress-wrap" class="countdown-progress-wrap">
+            <div class="countdown-progress-track">
+                <div id="countdown-progress-fill" class="countdown-progress-fill"></div>
+            </div>
+            <span id="countdown-target-label" class="countdown-target-label"></span>
+        </div>
+
+        <div id="love-quote" class="love-quote"></div>
     </header>
 
     <main class="gallery-container" id="dinding-foto">
     </main>
 
-    <!-- Penutup Halaman (Milestone Footer) -->
+    <!-- Penutup Halaman (Interactive Milestone Footer) -->
     <footer class="memory-footer">
         <div class="footer-divider">🌸 ✨ 🌸</div>
-        <p class="footer-milestones">
-            6 Mei 2026: Stasiun Jatinegara &bull; 14 Mei 2026: Kopi Nako Kemang &bull; Jakarta Night Ride &bull; Trip Bandung &bull; &amp; Masih Banyak Cerita Lagi... ♾️
-        </p>
-        <p class="footer-credit">Dibuat dengan penuh cinta oleh Titan untuk Widia Nurasifa ❤️</p>
+        <p class="footer-hint">Ketuk jejak perjalanan kita di bawah untuk melihat ceritanya ✨</p>
+        <div class="milestone-pills">
+            <button type="button" class="milestone-chip" data-milestone="jatinegara">6 Mei 2026: Stasiun Jatinegara 🚉</button>
+            <button type="button" class="milestone-chip" data-milestone="kemang">14 Mei 2026: Kopi Nako Kemang ☕</button>
+            <button type="button" class="milestone-chip" data-milestone="jakarta">Jakarta Night Ride 🏍️</button>
+            <button type="button" class="milestone-chip" data-milestone="bandung">Trip Bandung &amp; Golden Pine 🌲</button>
+        </div>
+        <p class="footer-credit">Dibuat dengan penuh cinta oleh Titan untuk Widia Nurasifah ❤️</p>
     </footer>
 
+    <!-- Modal Jejak Perjalanan Kita -->
+    <div id="milestone-modal" class="custom-modal">
+        <div class="milestone-card">
+            <span id="close-milestone-btn" class="close-letter-btn">&times;</span>
+            <div id="milestone-icon" class="milestone-icon">🚉</div>
+            <span id="milestone-date" class="milestone-date">6 Mei 2026</span>
+            <h3 id="milestone-title">Stasiun Jatinegara</h3>
+            <p id="milestone-story"></p>
+        </div>
+    </div>
+
+    <!-- Modal Amplop, Surat Cinta Rahasia & Kapsul Waktu Terkunci -->
     <div id="letter-modal" class="custom-modal">
-        <div class="letter-box">
+        <!-- Tahap 1: Amplop Kertas Terbuka -->
+        <div id="envelope-stage" class="envelope-stage">
+            <div id="envelope-card" class="envelope-card">
+                <div class="envelope-flap"></div>
+                <div class="envelope-paper-preview">Untuk Widia ❤️</div>
+                <div class="envelope-pocket"></div>
+                <div class="envelope-seal">💌</div>
+            </div>
+            <p class="envelope-hint">Membuka surat untukmu...</p>
+        </div>
+
+        <!-- Tahap 2: Lembaran Surat Tulisan Tangan & Tab Kapsul Waktu -->
+        <div id="letter-box" class="letter-box">
+            <div id="letter-progress" class="letter-progress"></div>
             <span class="close-letter-btn">&times;</span>
-            <h3>Untuk Widia Nurasifa tercinta, 🌸</h3>
-            <div class="letter-content">
-                <p>Hai Wid, lewat halaman web kecil ini, aku mau mengabadikan setiap jengkal tawa, senyuman, dan semua momen indah yang udah kita lalui bareng-bareng semenjak awal kenal sampai hari ini.</p>
-                <p>Inget gak? Awal kenal dulu kamu tuh dingin dan cuek banget, kalau balas chat bisa lama banget. Tapi untungnya aku gak menyerah buat nge-chat kamu, hehe.</p>
-                <p>Momen yang gak bakal aku lupain itu waktu tanggal 6 Mei 2026. Kamu baru balik mudik naik kereta dan sampai stasiun Jatinegara jam 1 malam. Karena aku khawatir kamu sendirian malam-malam, aku nekat nawarin buat jemput. Walau awalnya kamu menolak, akhirnya kamu mau juga. Foto pertama di dinding memori ini adalah foto yang kamu kirim malam itu buat ngasih tahu posisi kamu di stasiun, sebelum akhirnya aku anterin kamu sampai depan kost dengan aman. Sejak malam itu, kita makin dekat dan chat kita jadi makin intens.</p>
-                <p>Sampai akhirnya di tanggal 14 Mei 2026, di Kopi Nako Kemang, aku memberanikan diri buat menyatakan perasaan dan ngajakin kamu pacaran. Waktu kamu terima, rasanya senang dan bahagia banget! Sekarang kita udah resmi jalan bareng.</p>
-                <p>Aku bersyukur banget bisa kenal kamu. Kamu tuh cewek yang baik banget, kalem, saleha, dan gak pernah ngomong kasar—bener-bener sosok idaman yang bikin aku pengen banget buat halalin kamu dan nikah sama kamu suatu saat nanti, hehe.</p>
-                <p>Seru banget kalau ingat semua perjalanan kita; keliling Jakarta naik motor, ke Blok M, nongkrong di kafe, sampai motoran melewati Jenderal Sudirman, HI, dan Monas. Terakhir, trip kita ke Bandung juga berkesan banget! Naik kereta bareng, makan Ayam Bu Imas, sewa motor buat jalan-jalan, main gokart yang seru abis, makan bubur ayam DPR, sampai berburu cireng racing.</p>
-                <p>Paling lucu waktu kita ke Braga, foto box, makan es krim, dan makan cantik di Golden Pine. Kamu wajibin kita pakai dresscode hitam-hitam, padahal aku jarang banget pakai kemeja hitam, haha. Tapi hasilnya lucu banget dan banyak foto gemas kita di sana.</p>
-                
-                <p>Di balik semua kenangan manis ini, aku juga mau minta maaf ya, Wid... kalau dalam perjalanan hubungan kita, aku sering buat salah, bikin kamu kesel, kecewa, atau kurang paham sama perasaan kamu. Terima kasih banyak udah selalu sabar menghadapi aku. Aku berharap kita berdua bisa terus saling memaafkan lagi dan lagi, saling menguatkan, dan terus belajar memahami satu sama lain sampai nanti tujuan besar kita berdua terwujud—yaitu melangkah bersama sampai ke jenjang pernikahan. 💍✨</p>
-                
-                <p>Makasih ya Wid udah mau jadi bagian terindah dalam cerita hidupku. Ditunggu next trip kita ya, sayang. <i>I love you so much!</i> ❤️</p> 
+
+            <!-- Pengalih Tab Surat Sekarang vs Kapsul Waktu -->
+            <div class="letter-tabs">
+                <button id="tab-now-letter" class="letter-tab-btn active" type="button">Surat Untukmu 💌</button>
+                <button id="tab-capsule-letter" class="letter-tab-btn" type="button">Kapsul Waktu 🔒</button>
+            </div>
+
+            <!-- Konten Tab 1: Surat Cinta Utama + Auto-Detected Voice Note -->
+            <div id="panel-now-letter">
+                <h3>Untuk Widia Nurasifah tercinta, 🌸</h3>
+                <div class="letter-content">
+                    <p>Hai Wid, lewat halaman web kecil ini, aku mau mengabadikan setiap jengkal tawa, senyuman, dan semua momen indah yang udah kita lalui bareng-bareng semenjak awal kenal sampai hari ini.</p>
+                    <p>Inget gak? Awal kenal dulu kamu tuh dingin dan cuek banget, kalau balas chat bisa lama banget. Tapi untungnya aku gak menyerah buat nge-chat kamu, hehe.</p>
+                    <p>Momen yang gak bakal aku lupain itu waktu tanggal 6 Mei 2026. Kamu baru balik mudik naik kereta dan sampai stasiun Jatinegara jam 1 malam. Karena aku khawatir kamu sendirian malam-malam, aku nekat nawarin buat jemput. Walau awalnya kamu menolak, akhirnya kamu mau juga. Foto pertama di dinding memori ini adalah foto yang kamu kirim malam itu buat ngasih tahu posisi kamu di stasiun, sebelum akhirnya aku anterin kamu sampai depan kost dengan aman. Sejak malam itu, kita makin dekat dan chat kita jadi makin intens.</p>
+                    <p>Sampai akhirnya di tanggal 14 Mei 2026, di Kopi Nako Kemang, aku memberanikan diri buat menyatakan perasaan dan ngajakin kamu pacaran. Waktu kamu terima, rasanya senang dan bahagia banget! Sekarang kita udah resmi jalan bareng.</p>
+                    <p>Aku bersyukur banget bisa kenal kamu. Kamu tuh cewek yang baik banget, kalem, saleha, dan gak pernah ngomong kasar—bener-bener sosok idaman yang bikin aku pengen banget buat halalin kamu dan nikah sama kamu suatu saat nanti, hehe.</p>
+                    <p>Seru banget kalau ingat semua perjalanan kita; keliling Jakarta naik motor, ke Blok M, nongkrong di kafe, sampai motoran melewati Jenderal Sudirman, HI, dan Monas. Terakhir, trip kita ke Bandung juga berkesan banget! Naik kereta bareng, makan Ayam Bu Imas, sewa motor buat jalan-jalan, main gokart yang seru abis, makan bubur ayam DPR, sampai berburu cireng racing.</p>
+                    <p>Paling lucu waktu kita ke Braga, foto box, makan es krim, dan makan cantik di Golden Pine. Kamu wajibin kita pakai dresscode hitam-hitam, padahal aku jarang banget pakai kemeja hitam, haha. Tapi hasilnya lucu banget dan banyak foto gemas kita di sana.</p>
+                    
+                    <p>Di balik semua kenangan manis ini, aku juga mau minta maaf ya, Wid... kalau dalam perjalanan hubungan kita, aku sering buat salah, bikin kamu kesel, kecewa, atau kurang paham sama perasaan kamu. Terima kasih banyak udah selalu sabar menghadapi aku. Aku berharap kita berdua bisa terus saling memaafkan lagi dan lagi, saling menguatkan, dan terus belajar memahami satu sama lain sampai nanti tujuan besar kita berdua terwujud—yaitu melangkah bersama sampai ke jenjang pernikahan. 💍✨</p>
+                    
+                    <p>Makasih ya Wid udah mau jadi bagian terindah dalam cerita hidupku. Ditunggu next trip kita ya, sayang. <i>I love you so much!</i> ❤️</p> 
+                </div>
+
+                <!-- Pemutar Pesan Suara Rahasia (Otomatis Muncul Jika lagu/voicenote.mp3 Tersedia) -->
+                <div id="voicenote-card" class="voicenote-card">
+                    <div class="voicenote-header">
+                        <span>🎙️ Pesan Suara Rahasia Untuk Widia</span>
+                    </div>
+                    <audio id="voicenote-player" controls preload="metadata"></audio>
+                </div>
+            </div>
+
+            <!-- Konten Tab 2: Kapsul Waktu Terkunci Hingga 1st Anniversary (14 Mei 2027) -->
+            <div id="panel-capsule-letter" class="capsule-panel">
+                <div id="capsule-locked-view" class="capsule-locked-view">
+                    <div class="capsule-lock-icon">⏳🔒</div>
+                    <h3>Kapsul Waktu 1st Anniversary</h3>
+                    <p class="capsule-desc">Surat rahasia ini dikunci khusus dan baru bisa dibuka tepat pada hari jadi kita yang pertama:</p>
+                    <div class="capsule-date-badge">14 Mei 2027 &bull; Pukul 09.00 WIB</div>
+                    <div id="capsule-countdown" class="capsule-countdown">Menghitung waktu pembukaan...</div>
+                </div>
+
+                <div id="capsule-unlocked-view" class="capsule-unlocked-view">
+                    <h3>Selamat 1 Tahun Bersama, Widia! 💍🎉</h3>
+                    <div class="letter-content">
+                        <p>Kalau kamu sudah bisa membaca surat ini, artinya kita berhasil melewati 365 hari pertama perjalanan kita bersama. Terima kasih sudah tetap menggenggam tanganku melewati hari-hari baik maupun hari-hari sulit.</p>
+                        <p>Dari malam pertama di Stasiun Jatinegara, sore di Kopi Nako Kemang, sampai seluruh cerita di dinding memori ini—semuanya terasa semakin berarti karena dijalani bareng kamu.</p>
+                        <p>Semoga tahun-tahun berikutnya membawa kita semakin dekat menuju niat baik kita berdua. <i>Happy 1st Anniversary, sayang!</i> ❤️</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -93,7 +195,11 @@
             <div id="double-tap-heart" class="double-tap-heart">❤️</div>
         </div>
         <div id="lightbox-caption" class="lightbox-caption"></div>
-        <a id="lightbox-download-btn" class="download-btn" download target="_blank">Download Foto 📥</a>
+        
+        <div class="lightbox-actions">
+            <button id="slideshow-btn" class="slideshow-btn" title="Putar Slideshow Sinematik">▶️ Slideshow</button>
+            <a id="lightbox-download-btn" class="download-btn" download target="_blank">Download Foto 📥</a>
+        </div>
     </div>
 
     <script src="script.js"></script>

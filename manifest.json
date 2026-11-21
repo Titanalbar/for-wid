@@ -1,0 +1,24 @@
+{
+  "name": "Our Memory Wall — Titan & Widia",
+  "short_name": "Memory Wall ❤️",
+  "description": "Setiap foto punya cerita, dan setiap cerita selalu tentang kita.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fcf8f2",
+  "theme_color": "#6b534e",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23fcf8f2'/><text x='50%' y='54%' dominant-baseline='central' text-anchor='middle' font-size='64'>❤️</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23fcf8f2'/><text x='50%' y='54%' dominant-baseline='central' text-anchor='middle' font-size='64'>❤️</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
