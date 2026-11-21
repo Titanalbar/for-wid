@@ -459,8 +459,8 @@ function perbaruiMediaSessionLockscreen(judulLagu, sedangPutar) {
 }
 
 function getTargetVolumeAktif() {
-    if (sedangPutarVoiceNote) return 0.03; // Backsound sangat lembut (3%) agar suara kamu dominan
-    if (sedangMembacaSurat) return 0.30;   // Volume baca surat (30%)
+    if (sedangPutarVoiceNote) return 0.01; // Backsound super pelan (1%) agar suara kamu dominan
+    if (sedangMembacaSurat) return 0.25;   // Volume baca surat (25%)
     return 1.0;                            // Volume normal (100%)
 }
 
@@ -473,17 +473,17 @@ function transisiVolumeHalus(player, volumeTujuan, onSelesai = null) {
         const saatIni = parseFloat(player.volume);
         const selisih = volumeTujuan - saatIni;
 
-        if (Math.abs(selisih) <= 0.03) {
+        if (Math.abs(selisih) <= 0.015) {
             player.volume = volumeTujuan;
             clearInterval(volumeFadeInterval);
             volumeFadeInterval = null;
             isFading = false;
             if (onSelesai) onSelesai();
         } else {
-            const langkah = selisih > 0 ? 0.03 : -0.03;
+            const langkah = selisih > 0 ? 0.015 : -0.015;
             player.volume = Math.min(1, Math.max(0, parseFloat((saatIni + langkah).toFixed(3))));
         }
-    }, 50);
+    }, 45);
 }
 
 function pasangListenerLaguSelesai(player) {
@@ -601,7 +601,7 @@ musicBtn.addEventListener('click', function(e) {
 });
 
 // ==========================================
-// 5. AMPLOP TERBUKA, SURAT CINTA, VOICE NOTE TERSEMBUNYI (BOOST + FADE IN/OUT) & KAPSUL WAKTU
+// 5. AMPLOP TERBUKA, SURAT CINTA, VOICE NOTE TERSEMBUNYI (450% BOOST + COMPRESSOR + FADE IN/OUT)
 // ==========================================
 const letterBtn = document.getElementById('letter-btn');
 const letterModal = document.getElementById('letter-modal');
@@ -623,13 +623,20 @@ let sudahAutoPlayVoiceNote = false;
 let sedangFadeOutVoiceNote = false;
 let voiceFadeInterval = null;
 
-// Web Audio API Booster untuk memperbesar suara rekaman (240%)
+// Web Audio API Booster + Compressor untuk memperbesar suara rekaman (450%) tanpa pecah
 let voiceAudioCtx = null;
 let voiceGainNode = null;
-const TARGET_BOOST_VOICE = 2.4; // 240% volume suara kamu
+const TARGET_BOOST_VOICE = 4.5; // 450% volume suara kamu
 
 function siapkanBoosterSuara() {
-    if (voiceGainNode || !voicenotePlayer) return;
+    if (!voicenotePlayer) return;
+
+    if (voiceAudioCtx && voiceAudioCtx.state === 'suspended') {
+        voiceAudioCtx.resume().catch(() => {});
+    }
+
+    if (voiceGainNode) return;
+
     try {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
         if (!AudioContextClass) return;
@@ -639,23 +646,31 @@ function siapkanBoosterSuara() {
         voiceGainNode = voiceAudioCtx.createGain();
         voiceGainNode.gain.value = 0;
 
+        // Compressor mencegah distorsi saat vokal dikeraskan 4.5x
+        const compressor = voiceAudioCtx.createDynamicsCompressor();
+        compressor.threshold.setValueAtTime(-18, voiceAudioCtx.currentTime);
+        compressor.knee.setValueAtTime(12, voiceAudioCtx.currentTime);
+        compressor.ratio.setValueAtTime(6, voiceAudioCtx.currentTime);
+        compressor.attack.setValueAtTime(0.005, voiceAudioCtx.currentTime);
+        compressor.release.setValueAtTime(0.15, voiceAudioCtx.currentTime);
+
         source.connect(voiceGainNode);
-        voiceGainNode.connect(voiceAudioCtx.destination);
+        voiceGainNode.connect(compressor);
+        compressor.connect(voiceAudioCtx.destination);
     } catch {
-        // Fallback otomatis ke volume standar HTML5 jika dijalankan via file://
+        // Fallback otomatis ke volume standar HTML5 jika browser membatasi file://
         voiceGainNode = null;
     }
 }
 
 function aturLevelSuaraVoiceNote(nilaiNormalisasi) {
-    // nilaiNormalisasi: 0.0 (hening) sampai 1.0 (maksimal)
     const levelAman = Math.min(1, Math.max(0, nilaiNormalisasi));
     if (voiceGainNode && voiceAudioCtx) {
         if (voiceAudioCtx.state === 'suspended') {
             voiceAudioCtx.resume().catch(() => {});
         }
         voicenotePlayer.volume = 1.0;
-        voiceGainNode.gain.setTargetAtTime(levelAman * TARGET_BOOST_VOICE, voiceAudioCtx.currentTime, 0.04);
+        voiceGainNode.gain.setTargetAtTime(levelAman * TARGET_BOOST_VOICE, voiceAudioCtx.currentTime, 0.03);
     } else if (voicenotePlayer) {
         voicenotePlayer.volume = levelAman;
     }
@@ -861,7 +876,6 @@ function tutupModalSurat() {
     sedangMembacaSurat = false;
     sudahAutoPlayVoiceNote = false;
 
-    // Fade-out lembut jika rekaman suara masih berjalan saat surat ditutup
     if (voicenotePlayer && !voicenotePlayer.paused) {
         fadeOutVoiceNote(450, () => {
             voicenotePlayer.currentTime = 0;
@@ -894,6 +908,9 @@ if (letterBtn && letterModal && closeLetterBtn) {
         e.stopPropagation();
         getarLembut([15, 30, 20]);
         sedangMembacaSurat = true;
+
+        // Siapkan booster audio sejak pengguna mengetuk tombol surat (penting untuk browser HP)
+        siapkanBoosterSuara();
 
         const activePlayer = players[indeksLaguSekarang];
         if (activePlayer && !activePlayer.paused) {
